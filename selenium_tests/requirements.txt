@@ -1,0 +1,14 @@
+# ================================
+# 需求文件 (requirements.txt)
+# ================================
+
+"""
+selenium==4.15.0
+pytest==7.4.3
+pytest-html==4.1.1
+pytest-xdist==3.3.1
+webdriver-manager==4.0.1
+faker==20.1.0
+allure-pytest==2.13.2
+requests==2.31.0
+"""

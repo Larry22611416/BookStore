@@ -1,0 +1,44 @@
+# ================================
+# 執行指令範例
+# ================================
+
+"""
+# 基本執行
+pytest test_bookstore.py -v
+
+# 指定瀏覽器執行
+pytest --browser=chrome test_bookstore.py -v
+pytest --browser=firefox test_bookstore.py -v
+
+# 無頭模式執行
+pytest --browser=chrome --headless test_bookstore.py -v
+
+# 生成HTML報告
+pytest --html=report.html --self-contained-html test_bookstore.py
+
+# 平行執行（需要安裝 pytest-xdist）
+pytest -n 2 test_bookstore.py
+
+# 執行特定測試類
+pytest test_bookstore.py::TestUserLogin -v
+
+# 執行特定測試方法
+pytest test_bookstore.py::TestUserLogin::test_successful_login -v
+
+# 使用標記執行測試
+pytest -m smoke test_bookstore.py
+
+# 執行並在失敗時停止
+pytest -x test_bookstore.py
+
+# 顯示最慢的10個測試
+pytest --durations=10 test_bookstore.py
+
+# 執行上次失敗的測試
+pytest --lf test_bookstore.py
+
+# 使用自訂執行器
+python run_tests.py --type smoke --browser chrome
+python run_tests.py --type regression --browser firefox --headless
+python run_tests.py --type parallel --workers 4
+"""
