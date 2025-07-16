@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資料庫管理工具 - 書客來開發工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微軟雅黑", Arial, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        /* 頂部導航 */
+        .top-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* 主要內容 */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 警告提示 */
+        .warning-banner {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning-icon {
+            font-size: 24px;
+            color: #e17055;
+        }
+
+        .warning-text {
+            color: #856404;
+        }
+
+        /* 狀態卡片 */
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #4CAF50;
+        }
+
+        .status-card.error {
+            border-left-color: #f44336;
+        }
+
+        .status-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .status-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .status-value.error {
+            color: #f44336;
+        }
+
+        .status-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 工具面板 */
+        .tool-panel {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        /* 按鈕組 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tool-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tool-btn.primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tool-btn.primary:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn.secondary {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .tool-btn.secondary:hover {
+            background-color: #1976D2;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn.warning {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .tool-btn.warning:hover {
+            background-color: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn.danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .tool-btn.danger:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .tool-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 資料表格 */
+        .data-table-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .data-cell-email {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .data-cell-date {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .data-cell-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-completed {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        /* 日誌區域 */
+        .log-container {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            font-family: 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-title {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 2px 0;
+        }
+
+        .log-timestamp {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .log-level-info {
+            color: #2196F3;
+        }
+
+        .log-level-success {
+            color: #4CAF50;
+        }
+
+        .log-level-warning {
+            color: #ff9800;
+        }
+
+        .log-level-error {
+            color: #f44336;
+        }
+
+        /* 載入指示器 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .main-container {
+                padding: 0 10px;
+            }
+
+            .status-container {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .tool-btn {
+                justify-content: center;
+            }
+
+            .data-table-container {
+                padding: 15px;
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航 -->
+    <div class="top-nav">
+        <div class="nav-container">
+            <div class="nav-title">🛠️ 書客來資料庫管理工具</div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">📚 回到書店</a>
+                <a href="login.html" class="nav-link">🔑 登入頁面</a>
+                <a href="register.html" class="nav-link">📝 註冊頁面</a>
+                <a href="shopping.html" class="nav-link">🛒 購物車</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="main-container">
+        <!-- 警告提示 -->
+        <div class="warning-banner">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-text">
+                <strong>開發工具警告：</strong>此頁面僅供開發和測試使用。在生產環境中，請勿暴露此管理工具給一般用戶。
+                所有資料庫操作都會影響系統狀態，請謹慎使用。
+            </div>
+        </div>
+
+        <!-- 資料庫狀態 -->
+        <div class="status-container">
+            <div class="status-card" id="dbStatusCard">
+                <div class="status-title">📊 資料庫狀態</div>
+                <div class="status-value" id="dbStatusValue">載入中...</div>
+                <div class="status-description" id="dbStatusDesc">正在檢查資料庫連線</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">👥 用戶總數</div>
+                <div class="status-value" id="userCountValue">0</div>
+                <div class="status-description">已註冊的會員數量</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">📦 訂單總數</div>
+                <div class="status-value" id="orderCountValue">0</div>
+                <div class="status-description">系統中的訂單數量</div>
+            </div>
+            <div class="status-card">
+                <div class="status-title">💰 總銷售額</div>
+                <div class="status-value" id="totalSalesValue">$0</div>
+                <div class="status-description">累計銷售金額</div>
+            </div>
+        </div>
+
+        <!-- 資料庫操作工具 -->
+        <div class="tool-panel">
+            <div class="panel-title">🔧 資料庫操作</div>
+            <div class="button-group">
+                <button class="tool-btn primary" onclick="refreshStatus()">
+                    🔄 重新整理狀態
+                </button>
+                <button class="tool-btn secondary" onclick="initTestData()">
+                    🧪 初始化測試資料
+                </button>
+                <button class="tool-btn warning" onclick="exportData()">
+                    📤 匯出資料
+                </button>
+                <button class="tool-btn warning" onclick="importData()">
+                    📥 匯入資料
+                </button>
+                <button class="tool-btn danger" onclick="clearDatabase()">
+                    🗑️ 清空資料庫
+                </button>
+            </div>
+        </div>
+
+        <!-- 用戶管理 -->
+        <div class="tool-panel">
+            <div class="panel-title">👥 用戶管理</div>
+            <div class="button-group">
+                <button class="tool-btn primary" onclick="loadUsers()">
+                    📋 載入用戶列表
+                </button>
+                <button class="tool-btn secondary" onclick="createTestUser()">
+                    ➕ 創建測試用戶
+                </button>
+            </div>
+            <div class="data-table-container" id="usersTableContainer" style="display: none;">
+                <table class="data-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>用戶ID</th>
+                            <th>電子郵件</th>
+                            <th>姓名</th>
+                            <th>註冊時間</th>
+                            <th>狀態</th>
+                            <th>最後登入</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 訂單管理 -->
+        <div class="tool-panel">
+            <div class="panel-title">📦 訂單管理</div>
+            <div class="button-group">
+                <button class="tool-btn primary" onclick="loadOrders()">
+                    📋 載入訂單列表
+                </button>
+                <button class="tool-btn secondary" onclick="createTestOrder()">
+                    ➕ 創建測試訂單
+                </button>
+            </div>
+            <div class="data-table-container" id="ordersTableContainer" style="display: none;">
+                <table class="data-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>用戶郵件</th>
+                            <th>訂單金額</th>
+                            <th>付款方式</th>
+                            <th>訂單狀態</th>
+                            <th>訂購時間</th>
+                            <th>商品數量</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 操作日誌 -->
+        <div class="log-container">
+            <div class="log-title">📝 操作日誌</div>
+            <div id="logContent">
+                <div class="log-entry">
+                    <span class="log-timestamp">[啟動]</span>
+                    <span class="log-level-info">資料庫管理工具已載入</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 載入指示器 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>正在處理請求...</p>
+        </div>
+    </div>
+
+    <!-- 資料庫管理系統 -->
+    <script src="js/database.js"></script>
+    <script>
+        // 資料庫管理工具類
+        class DatabaseAdminTool {
+            constructor() {
+                this.isReady = false;
+                this.init();
+            }
+
+            async init() {
+                console.log('🛠️ 初始化資料庫管理工具');
+                
+                // 等待資料庫準備就緒
+                if (window.bookstoreDB && window.bookstoreDB.db) {
+                    this.isReady = true;
+                    await this.refreshStatus();
+                } else {
+                    // 監聽資料庫就緒事件
+                    window.addEventListener('databaseReady', async () => {
+                        this.isReady = true;
+                        await this.refreshStatus();
+                    });
+                }
+                
+                this.addLog('info', '管理工具初始化完成');
+            }
+
+            // 重新整理狀態
+            async refreshStatus() {
+                if (!this.isReady) {
+                    this.addLog('error', '資料庫尚未準備就緒');
+                    this.updateDbStatus('error', '未連線', '資料庫尚未準備就緒');
+                    return;
+                }
+
+                try {
+                    this.addLog('info', '正在檢查資料庫狀態...');
+                    
+                    const status = await window.bookstoreDB.checkDatabaseStatus();
+                    
+                    if (status.isConnected) {
+                        this.updateDbStatus('success', '已連線', '資料庫運作正常');
+                        
+                        // 更新統計資料
+                        document.getElementById('userCountValue').textContent = status.userCount;
+                        document.getElementById('orderCountValue').textContent = status.orderCount;
+                        
+                        // 計算總銷售額
+                        const orders = await window.bookstoreDB.getAllOrders();
+                        const totalSales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+                        document.getElementById('totalSalesValue').textContent = `$${totalSales.toLocaleString()}`;
+                        
+                        this.addLog('success', `狀態更新完成 - 用戶: ${status.userCount}, 訂單: ${status.orderCount}, 銷售額: $${totalSales.toLocaleString()}`);
+                    } else {
+                        this.updateDbStatus('error', '連線失敗', status.error || '未知錯誤');
+                        this.addLog('error', '資料庫連線失敗: ' + (status.error || '未知錯誤'));
+                    }
+                } catch (error) {
+                    console.error('❌ 檢查資料庫狀態失敗:', error);
+                    this.updateDbStatus('error', '檢查失敗', error.message);
+                    this.addLog('error', '檢查資料庫狀態失敗: ' + error.message);
+                }
+            }
+
+            // 更新資料庫狀態顯示
+            updateDbStatus(type, status, description) {
+                const card = document.getElementById('dbStatusCard');
+                const valueElement = document.getElementById('dbStatusValue');
+                const descElement = document.getElementById('dbStatusDesc');
+                
+                if (type === 'error') {
+                    card.classList.add('error');
+                    valueElement.classList.add('error');
+                } else {
+                    card.classList.remove('error');
+                    valueElement.classList.remove('error');
+                }
+                
+                valueElement.textContent = status;
+                descElement.textContent = description;
+            }
+
+            // 初始化測試資料
+            async initTestData() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                if (!confirm('確定要初始化測試資料嗎？這將創建預設的測試用戶和訂單。')) {
+                    return;
+                }
+
+                this.showLoading(true);
+                this.addLog('info', '開始初始化測試資料...');
+
+                try {
+                    await window.bookstoreDB.initTestData();
+                    this.addLog('success', '測試資料初始化完成');
+                    await this.refreshStatus();
+                    alert('✅ 測試資料初始化成功！');
+                } catch (error) {
+                    console.error('❌ 初始化測試資料失敗:', error);
+                    this.addLog('error', '初始化測試資料失敗: ' + error.message);
+                    alert('❌ 初始化失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 清空資料庫
+            async clearDatabase() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                const confirmText = '清空資料庫';
+                const userInput = prompt(`⚠️ 危險操作警告！\n\n這將清空所有用戶、訂單和購物車資料，此操作無法復原。\n\n請輸入 "${confirmText}" 來確認操作:`);
+                
+                if (userInput !== confirmText) {
+                    this.addLog('info', '清空資料庫操作已取消');
+                    return;
+                }
+
+                this.showLoading(true);
+                this.addLog('warning', '開始清空資料庫...');
+
+                try {
+                    await window.bookstoreDB.resetAllData();
+                    this.addLog('success', '資料庫已清空並重新初始化測試資料');
+                    await this.refreshStatus();
+                    
+                    // 清空表格顯示
+                    document.getElementById('usersTableContainer').style.display = 'none';
+                    document.getElementById('ordersTableContainer').style.display = 'none';
+                    
+                    alert('✅ 資料庫已清空並重新初始化！');
+                } catch (error) {
+                    console.error('❌ 清空資料庫失敗:', error);
+                    this.addLog('error', '清空資料庫失敗: ' + error.message);
+                    alert('❌ 清空失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 載入用戶列表
+            async loadUsers() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                this.showLoading(true);
+                this.addLog('info', '正在載入用戶列表...');
+
+                try {
+                    const users = await window.bookstoreDB.getAllUsers();
+                    this.displayUsers(users);
+                    this.addLog('success', `用戶列表載入完成，共 ${users.length} 位用戶`);
+                } catch (error) {
+                    console.error('❌ 載入用戶列表失敗:', error);
+                    this.addLog('error', '載入用戶列表失敗: ' + error.message);
+                    alert('❌ 載入失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 顯示用戶列表
+            displayUsers(users) {
+                const tbody = document.getElementById('usersTableBody');
+                const container = document.getElementById('usersTableContainer');
+                
+                tbody.innerHTML = '';
+                
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: #666;">沒有用戶資料</td></tr>';
+                } else {
+                    users.forEach(user => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${user.userId}</td>
+                            <td class="data-cell-email">${user.email}</td>
+                            <td>${user.name}</td>
+                            <td class="data-cell-date">${new Date(user.registrationDate).toLocaleString('zh-TW')}</td>
+                            <td><span class="data-cell-status status-active">${user.isActive ? '活躍' : '停用'}</span></td>
+                            <td class="data-cell-date">${user.lastLoginDate ? new Date(user.lastLoginDate).toLocaleString('zh-TW') : '從未登入'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+                
+                container.style.display = 'block';
+            }
+
+            // 載入訂單列表
+            async loadOrders() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                this.showLoading(true);
+                this.addLog('info', '正在載入訂單列表...');
+
+                try {
+                    const orders = await window.bookstoreDB.getAllOrders();
+                    this.displayOrders(orders);
+                    this.addLog('success', `訂單列表載入完成，共 ${orders.length} 筆訂單`);
+                } catch (error) {
+                    console.error('❌ 載入訂單列表失敗:', error);
+                    this.addLog('error', '載入訂單列表失敗: ' + error.message);
+                    alert('❌ 載入失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 顯示訂單列表
+            displayOrders(orders) {
+                const tbody = document.getElementById('ordersTableBody');
+                const container = document.getElementById('ordersTableContainer');
+                
+                tbody.innerHTML = '';
+                
+                if (orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: #666;">沒有訂單資料</td></tr>';
+                } else {
+                    orders.forEach(order => {
+                        const statusClass = {
+                            'processing': 'status-processing',
+                            'completed': 'status-completed',
+                            'shipped': 'status-completed'
+                        }[order.status] || 'status-processing';
+
+                        const paymentMethodMap = {
+                            'credit_card': '信用卡',
+                            'atm': 'ATM轉帳',
+                            'convenience_store': '超商取貨付款',
+                            'line_pay': 'LINE Pay'
+                        };
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="data-cell-email">${order.orderNumber}</td>
+                            <td>${order.userEmail}</td>
+                            <td>$${order.totalAmount.toLocaleString()}</td>
+                            <td>${paymentMethodMap[order.paymentMethod] || order.paymentMethod}</td>
+                            <td><span class="data-cell-status ${statusClass}">${order.statusText}</span></td>
+                            <td class="data-cell-date">${new Date(order.orderDate).toLocaleString('zh-TW')}</td>
+                            <td>${order.items.length} 項商品</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                }
+                
+                container.style.display = 'block';
+            }
+
+            // 創建測試用戶
+            async createTestUser() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                const email = prompt('請輸入測試用戶的電子郵件:');
+                if (!email) return;
+
+                const name = prompt('請輸入測試用戶的姓名:') || '測試用戶';
+
+                this.showLoading(true);
+                this.addLog('info', `正在創建測試用戶: ${email}`);
+
+                try {
+                    const userData = {
+                        email: email.toLowerCase().trim(),
+                        password: '123456',
+                        name: name,
+                        phone: '0912345678',
+                        address: '測試地址'
+                    };
+
+                    await window.bookstoreDB.registerUser(userData);
+                    this.addLog('success', `測試用戶創建成功: ${email}`);
+                    await this.refreshStatus();
+                    alert('✅ 測試用戶創建成功！\n\n登入資訊:\n電子郵件: ' + email + '\n密碼: 123456');
+                } catch (error) {
+                    console.error('❌ 創建測試用戶失敗:', error);
+                    this.addLog('error', '創建測試用戶失敗: ' + error.message);
+                    alert('❌ 創建失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 創建測試訂單
+            async createTestOrder() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                const userEmail = prompt('請輸入用戶電子郵件 (留空使用 test@bookstore.com):') || 'test@bookstore.com';
+
+                this.showLoading(true);
+                this.addLog('info', `正在為用戶 ${userEmail} 創建測試訂單`);
+
+                try {
+                    const orderData = {
+                        userEmail: userEmail.toLowerCase().trim(),
+                        items: [
+                            {
+                                id: 'test_book_' + Date.now(),
+                                title: '測試書籍 - ' + new Date().toLocaleString(),
+                                price: 299,
+                                quantity: 1
+                            }
+                        ],
+                        totalAmount: 299,
+                        paymentMethod: 'credit_card',
+                        shippingAddress: '測試地址',
+                        notes: '測試訂單 - 由管理工具創建'
+                    };
+
+                    const newOrder = await window.bookstoreDB.createOrder(orderData);
+                    this.addLog('success', `測試訂單創建成功: ${newOrder.orderNumber}`);
+                    await this.refreshStatus();
+                    alert('✅ 測試訂單創建成功！\n\n訂單編號: ' + newOrder.orderNumber);
+                } catch (error) {
+                    console.error('❌ 創建測試訂單失敗:', error);
+                    this.addLog('error', '創建測試訂單失敗: ' + error.message);
+                    alert('❌ 創建失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 匯出資料
+            async exportData() {
+                if (!this.isReady) {
+                    alert('資料庫尚未準備就緒');
+                    return;
+                }
+
+                this.showLoading(true);
+                this.addLog('info', '正在匯出資料...');
+
+                try {
+                    const users = await window.bookstoreDB.getAllUsers();
+                    const orders = await window.bookstoreDB.getAllOrders();
+                    
+                    const exportData = {
+                        exportDate: new Date().toISOString(),
+                        version: '1.0',
+                        users: users,
+                        orders: orders
+                    };
+                    
+                    const dataStr = JSON.stringify(exportData, null, 2);
+                    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                    
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(dataBlob);
+                    link.download = `bookstore_data_export_${new Date().toISOString().split('T')[0]}.json`;
+                    link.click();
+                    
+                    this.addLog('success', `資料匯出完成 - 用戶: ${users.length}, 訂單: ${orders.length}`);
+                    alert('✅ 資料匯出完成！檔案已下載。');
+                } catch (error) {
+                    console.error('❌ 匯出資料失敗:', error);
+                    this.addLog('error', '匯出資料失敗: ' + error.message);
+                    alert('❌ 匯出失敗: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            // 匯入資料
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    this.showLoading(true);
+                    this.addLog('info', '正在匯入資料...');
+                    
+                    try {
+                        const text = await file.text();
+                        const data = JSON.parse(text);
+                        
+                        if (!data.users || !data.orders) {
+                            throw new Error('無效的資料格式');
+                        }
+                        
+                        // 這裡應該實作匯入邏輯
+                        // 為了簡化，暫時只顯示資料統計
+                        this.addLog('info', `準備匯入 - 用戶: ${data.users.length}, 訂單: ${data.orders.length}`);
+                        alert(`📊 資料預覽:\n\n用戶數量: ${data.users.length}\n訂單數量: ${data.orders.length}\n匯出日期: ${data.exportDate}\n\n⚠️ 匯入功能尚未完全實作，請手動處理資料。`);
+                        
+                        this.addLog('warning', '匯入功能尚未完全實作');
+                    } catch (error) {
+                        console.error('❌ 匯入資料失敗:', error);
+                        this.addLog('error', '匯入資料失敗: ' + error.message);
+                        alert('❌ 匯入失敗: ' + error.message);
+                    } finally {
+                        this.showLoading(false);
+                    }
+                };
+                input.click();
+            }
+
+            // 顯示/隱藏載入指示器
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
+            }
+
+            // 添加日誌
+            addLog(level, message) {
+                const logContent = document.getElementById('logContent');
+                const timestamp = new Date().toLocaleString('zh-TW');
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                    <span class="log-timestamp">[${timestamp}]</span>
+                    <span class="log-level-${level}">[${level.toUpperCase()}]</span>
+                    <span>${message}</span>
+                `;
+                
+                logContent.appendChild(logEntry);
+                
+                // 保持日誌在底部
+                logContent.scrollTop = logContent.scrollHeight;
+                
+                // 限制日誌數量
+                const entries = logContent.querySelectorAll('.log-entry');
+                if (entries.length > 100) {
+                    entries[0].remove();
+                }
+            }
+        }
+
+        // 創建全域管理工具實例
+        let adminTool;
+
+        // 全域函數
+        function refreshStatus() {
+            if (adminTool) adminTool.refreshStatus();
+        }
+
+        function initTestData() {
+            if (adminTool) adminTool.initTestData();
+        }
+
+        function clearDatabase() {
+            if (adminTool) adminTool.clearDatabase();
+        }
+
+        function loadUsers() {
+            if (adminTool) adminTool.loadUsers();
+        }
+
+        function loadOrders() {
+            if (adminTool) adminTool.loadOrders();
+        }
+
+        function createTestUser() {
+            if (adminTool) adminTool.createTestUser();
+        }
+
+        function createTestOrder() {
+            if (adminTool) adminTool.createTestOrder();
+        }
+
+        function exportData() {
+            if (adminTool) adminTool.exportData();
+        }
+
+        function importData() {
+            if (adminTool) adminTool.importData();
+        }
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛠️ 資料庫管理工具載入完成');
+            
+            // 等待資料庫準備就緒後初始化
+            const initAdminTool = () => {
+                if (window.bookstoreDB) {
+                    adminTool = new DatabaseAdminTool();
+                } else {
+                    setTimeout(initAdminTool, 100);
+                }
+            };
+            
+            initAdminTool();
+        });
+
+        // 監聽資料庫事件
+        window.addEventListener('databaseReady', function(e) {
+            console.log('📊 資料庫已就緒，管理工具可正常使用');
+        });
+
+        window.addEventListener('databaseError', function(e) {
+            console.warn('⚠️ 資料庫發生錯誤，某些功能可能無法正常使用');
+        });
+
+        console.log('🛠️ 資料庫管理工具腳本載入完成');
+    </script>
+</body>
+</html>

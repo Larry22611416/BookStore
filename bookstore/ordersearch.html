@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單查詢 - 書客來線上書店</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微軟雅黑", Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* 頂部導航 */
+        .top-nav {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px 0;
+        }
+
+        .top-nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 13px;
+        }
+
+        .nav-left a, .nav-right a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: #4CAF50;
+        }
+
+        .nav-right .user-info {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* 搜尋區域 */
+        .search-section {
+            background-color: #fff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            margin-right: 30px;
+        }
+
+        .logo h1 {
+            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            max-width: 500px;
+        }
+
+        .category-select {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-right: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-right: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        /* 麵包屑導航 */
+        .breadcrumb {
+            background-color: #fff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .breadcrumb .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* 主要內容區域 */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        /* 左側選單 */
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-radius: 4px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .sidebar-title {
+            background-color: #f8f8f8;
+            padding: 12px 15px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .sidebar-menu li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: #f0f0f0;
+            color: #4CAF50;
+        }
+
+        .sidebar-menu a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* 右側內容區域 */
+        .content-area {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+
+        /* 狀態提示 */
+        .status-indicator {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status-loading {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .status-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .status-success {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        /* 訂單查詢篩選區域 */
+        .order-filters {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            min-width: 60px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .filter-btn.active {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .filter-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 統計信息 */
+        .order-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 訂單列表 */
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-table th {
+            background-color: #f8f8f8;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        .order-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .order-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .order-number {
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .order-number:hover {
+            text-decoration: underline;
+        }
+
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-completed {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-shipped {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-cancelled {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .action-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        /* 訂單項目展開 */
+        .order-items {
+            background-color: #f8f9fa;
+            border-left: 3px solid #4CAF50;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+            font-size: 12px;
+        }
+
+        .item-name {
+            flex: 1;
+            text-align: left;
+            margin-right: 10px;
+        }
+
+        .item-price {
+            color: #666;
+            white-space: nowrap;
+        }
+
+        /* 空狀態 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
+        .shop-now-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .shop-now-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* 載入指示器 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .order-table {
+                font-size: 11px;
+            }
+            
+            .order-table th,
+            .order-table td {
+                padding: 8px 4px;
+            }
+
+            .order-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航 -->
+    <div class="top-nav">
+        <div class="container">
+            <div class="nav-left">
+                <a href="index.html">回首頁</a>
+                <a href="#" onclick="showNewReleases()">新書推薦</a>
+                <a href="#" onclick="showBestsellers()">暢銷榜</a>
+                <a href="#" onclick="showEbooks()">電子書城</a>
+            </div>
+            <div class="nav-right">
+                <span class="user-info" id="userInfo">歡迎，會員</span>
+                <a href="#" onclick="logout()">登出</a>
+                <a href="shopping.html">購物車(<span id="cartCount">0</span>)</a>
+                <a href="#" onclick="toggleLanguage()">繁體</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜尋區域 -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>書客來</h1>
+                </a>
+            </div>
+            <div class="search-box">
+                <select class="category-select">
+                    <option value="all">全部</option>
+                    <option value="chinese">中文書</option>
+                    <option value="english">外文書</option>
+                    <option value="ebook">電子書</option>
+                </select>
+                <input type="text" class="search-input" placeholder="每日口袋99">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 麵包屑導航 -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">書客來</a> > 
+            <a href="#" onclick="showMemberCenter()">會員專區</a> > 
+            <span>訂單查詢</span>
+        </div>
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="main-container">
+        <!-- 左側選單 -->
+        <div class="sidebar">
+            <!-- 交易紀錄 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📦 交易紀錄</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active" onclick="showOrderSearch()">訂單查詢</a></li>
+                    <li><a href="#" onclick="showReturnExchange()">退換貨與開立收據</a></li>
+                    <li><a href="#" onclick="showInvoiceManagement()">發票/ 折價券查詢</a></li>
+                    <li><a href="#" onclick="showInternationalOrders()">下次預購清單</a></li>
+                    <li><a href="#" onclick="showSubscriptions()">關懷閱讀訂閱</a></li>
+                </ul>
+            </div>
+
+            <!-- 產品品項管理 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📚 產品品項管理</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showEbookLibrary()">電子書庫</a></li>
+                    <li><a href="#" onclick="showAudiobookLibrary()">有聲書庫</a></li>
+                    <li><a href="#" onclick="showDigitalContent()">數位商品庫查詢管理</a></li>
+                    <li><a href="#" onclick="showDownloadHistory()">下載使用紀錄</a></li>
+                </ul>
+            </div>
+
+            <!-- 會員資料/帳戶管理 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">👤 會員資料/帳戶管理</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showPersonalInfo()">個人資料管理/地址設定</a></li>
+                    <li><a href="#" onclick="showAccountSettings()">會員分級資訊</a></li>
+                    <li><a href="#" onclick="showPasswordSettings()">帳號資安全設定</a></li>
+                    <li><a href="#" onclick="showSocialAccounts()">OPENPOINT 帳號連結管理</a></li>
+                    <li><a href="#" onclick="showPreferences()">會員偏好設定</a></li>
+                </ul>
+            </div>
+
+            <!-- 電子書 -->
+            <div class="sidebar-section">
+                <div class="sidebar-title">📱 電子書</div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showAllEbooks()">全部書庫</a></li>
+                    <li><a href="#" onclick="showMyEbooks()">我的書庫</a></li>
+                    <li><a href="#" onclick="showEbookSubscriptions()">訂閱書庫</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 右側內容區域 -->
+        <div class="content-area">
+            <h2 class="page-title">訂單查詢</h2>
+            
+            <!-- 狀態指示器 -->
+            <div class="status-indicator" id="statusIndicator"></div>
+            
+            <!-- 統計信息 -->
+            <div class="order-stats" id="orderStats" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">總訂單數</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalAmount">$0</div>
+                    <div class="stat-label">總金額</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completedOrders">0</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="processingOrders">0</div>
+                    <div class="stat-label">處理中</div>
+                </div>
+            </div>
+            
+            <!-- 篩選器 -->
+            <div class="order-filters">
+                <div class="filter-row">
+                    <span class="filter-label">狀態</span>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterOrders('all')">全部</button>
+                        <button class="filter-btn" onclick="filterOrders('processing')">處理中</button>
+                        <button class="filter-btn" onclick="filterOrders('shipped')">已出貨</button>
+                        <button class="filter-btn" onclick="filterOrders('completed')">已完成</button>
+                    </div>
+                </div>
+                <div class="filter-row">
+                    <span class="filter-label">時間</span>
+                    <div class="filter-buttons">
+                        <button class="filter-btn" onclick="filterByTime('week')">最近一週</button>
+                        <button class="filter-btn" onclick="filterByTime('month')">最近一月</button>
+                        <button class="filter-btn" onclick="filterByTime('quarter')">最近三月</button>
+                        <button class="filter-btn" onclick="filterByTime('year')">最近一年</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 說明文字 -->
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">
+                顯示您的所有訂單記錄。如需查詢更久前的訂單資料，請聯繫客服。電子書訂單請到<a href="#" style="color: #4CAF50;" onclick="showEbookLibrary()">電子書庫</a>查詢。
+            </p>
+
+            <!-- 訂單表格 -->
+            <div id="orderTableContainer">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>訂購時間</th>
+                            <th>付款方式</th>
+                            <th>訂單金額</th>
+                            <th>商品資訊</th>
+                            <th>處理狀態</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                        <!-- 訂單數據將通過 JavaScript 載入 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 空狀態 -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <h3>🔍 目前沒有符合條件的訂單</h3>
+                <p>您可以調整篩選條件或回到購物頁面繼續選購</p>
+                <a href="index.html" class="shop-now-btn">前往購物</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 資料庫管理系統 -->
+    <script src="js/database.js"></script>
+    <script>
+        // 訂單管理系統
+        class OrderManager {
+            constructor() {
+                this.currentUser = null;
+                this.allOrders = [];
+                this.filteredOrders = [];
+                this.currentFilter = 'all';
+                this.currentTimeFilter = null;
+                this.isDbReady = false;
+                this.init();
+            }
+
+            async init() {
+                console.log('🚀 初始化訂單管理系統...');
+                
+                // 檢查登入狀態
+                const loginCheck = this.checkLoginStatus();
+                if (!loginCheck) return;
+
+                // 等待資料庫準備就緒
+                await this.waitForDatabase();
+                
+                // 載入用戶訂單
+                await this.loadUserOrders();
+                
+                console.log('✅ 訂單管理系統初始化完成');
+            }
+
+            checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                const userEmail = localStorage.getItem('userEmail');
+                
+                if (!isLoggedIn || isLoggedIn !== 'true' || !userEmail) {
+                    this.showError('請先登入會員才能查詢訂單');
+                    setTimeout(() => {
+                        window.location.href = 'login.html?redirect=ordersearch.html';
+                    }, 2000);
+                    return false;
+                }
+                
+                this.currentUser = userEmail;
+                document.getElementById('userInfo').textContent = `歡迎，${userEmail}`;
+                return true;
+            }
+
+            async waitForDatabase() {
+                this.showLoading('正在連接資料庫...');
+                
+                return new Promise((resolve) => {
+                    const checkDatabase = () => {
+                        if (window.bookstoreDB && window.bookstoreDB.isReady) {
+                            this.isDbReady = true;
+                            console.log('✅ 資料庫已就緒');
+                            resolve();
+                        } else {
+                            setTimeout(checkDatabase, 100);
+                        }
+                    };
+                    
+                    checkDatabase();
+                    
+                    // 監聽資料庫事件
+                    window.addEventListener('databaseReady', () => {
+                        this.isDbReady = true;
+                        resolve();
+                    });
+                    
+                    window.addEventListener('databaseError', (e) => {
+                        this.showError('資料庫連線失敗，請重新整理頁面');
+                        console.error('❌ 資料庫錯誤:', e.detail);
+                    });
+                });
+            }
+
+            async loadUserOrders() {
+                try {
+                    this.showLoading('正在載入訂單資料...');
+                    
+                    if (!this.isDbReady) {
+                        throw new Error('資料庫未準備就緒');
+                    }
+
+                    // 從資料庫獲取用戶訂單
+                    this.allOrders = await window.bookstoreDB.getUserOrders(this.currentUser);
+                    console.log(`✅ 載入了 ${this.allOrders.length} 筆訂單`);
+                    
+                    this.filteredOrders = [...this.allOrders];
+                    this.updateOrderDisplay();
+                    this.updateStatistics();
+                    this.hideStatus();
+                    
+                } catch (error) {
+                    console.error('❌ 載入訂單失敗:', error);
+                    this.showError('載入訂單資料失敗: ' + error.message);
+                }
+            }
+
+            updateOrderDisplay() {
+                const tableBody = document.getElementById('orderTableBody');
+                const tableContainer = document.getElementById('orderTableContainer');
+                const emptyState = document.getElementById('emptyState');
+                
+                if (this.filteredOrders.length === 0) {
+                    tableContainer.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                tableContainer.style.display = 'block';
+                emptyState.style.display = 'none';
+                
+                tableBody.innerHTML = this.filteredOrders.map(order => this.renderOrderRow(order)).join('');
+            }
+
+            renderOrderRow(order) {
+                const paymentMethodMap = {
+                    'credit_card': '信用卡',
+                    'atm': 'ATM轉帳',
+                    'convenience_store': '超商取貨付款',
+                    'line_pay': 'LINE Pay',
+                    'cash_on_delivery': '貨到付款'
+                };
+
+                const statusMap = {
+                    'processing': { class: 'status-processing', text: '處理中' },
+                    'shipped': { class: 'status-shipped', text: '已出貨' },
+                    'completed': { class: 'status-completed', text: '已完成' },
+                    'cancelled': { class: 'status-cancelled', text: '已取消' }
+                };
+
+                const statusInfo = statusMap[order.status] || { class: 'status-processing', text: '處理中' };
+                const paymentMethod = paymentMethodMap[order.paymentMethod] || order.paymentMethod;
+
+                // 處理商品信息
+                const itemsDisplay = this.renderOrderItems(order.items);
+
+                return `
+                    <tr>
+                        <td class="order-number" onclick="viewOrderDetail('${order.orderNumber}')">${order.orderNumber}</td>
+                        <td>${new Date(order.orderDate).toLocaleString('zh-TW')}</td>
+                        <td>${paymentMethod}</td>
+                        <td>NT$ ${order.totalAmount.toLocaleString()}</td>
+                        <td style="text-align: left; max-width: 300px;">
+                            ${itemsDisplay}
+                        </td>
+                        <td><span class="order-status ${statusInfo.class}">${statusInfo.text}</span></td>
+                        <td>
+                            <div class="order-actions">
+                                <button class="action-btn" onclick="orderManager.viewOrderDetail('${order.orderNumber}')">詳情</button>
+                                <button class="action-btn" onclick="orderManager.downloadInvoice('${order.orderNumber}')">發票</button>
+                                ${order.status === 'processing' ? `<button class="action-btn" onclick="orderManager.cancelOrder('${order.orderNumber}')">取消</button>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+
+            renderOrderItems(items) {
+                if (!items || items.length === 0) {
+                    return '<div class="order-items">無商品資訊</div>';
+                }
+
+                if (items.length === 1) {
+                    const item = items[0];
+                    return `
+                        <div class="order-items">
+                            <div class="order-item">
+                                <span class="item-name">${item.title || item.name || '商品'}</span>
+                                <span class="item-price">x${item.quantity} NT$${(item.price * item.quantity).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="order-items">
+                            <div class="order-item">
+                                <span class="item-name">${items[0].title || items[0].name || '商品'} 等 ${items.length} 項商品</span>
+                                <span class="item-price">總計 ${items.reduce((sum, item) => sum + item.quantity, 0)} 件</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            updateStatistics() {
+                const stats = document.getElementById('orderStats');
+                
+                if (this.allOrders.length === 0) {
+                    stats.style.display = 'none';
+                    return;
+                }
+
+                stats.style.display = 'flex';
+                
+                const totalAmount = this.allOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+                const completedOrders = this.allOrders.filter(order => order.status === 'completed').length;
+                const processingOrders = this.allOrders.filter(order => order.status === 'processing').length;
+                
+                document.getElementById('totalOrders').textContent = this.allOrders.length;
+                document.getElementById('totalAmount').textContent = `$${totalAmount.toLocaleString()}`;
+                document.getElementById('completedOrders').textContent = completedOrders;
+                document.getElementById('processingOrders').textContent = processingOrders;
+            }
+
+            // 篩選功能
+            filterOrders(status) {
+                this.currentFilter = status;
+                this.applyFilters();
+                this.updateFilterButtons();
+            }
+
+            filterByTime(period) {
+                this.currentTimeFilter = period;
+                this.applyFilters();
+                this.updateTimeFilterButtons();
+            }
+
+            applyFilters() {
+                let filtered = [...this.allOrders];
+
+                // 狀態篩選
+                if (this.currentFilter !== 'all') {
+                    filtered = filtered.filter(order => order.status === this.currentFilter);
+                }
+
+                // 時間篩選
+                if (this.currentTimeFilter) {
+                    const now = new Date();
+                    const timeLimit = this.getTimeLimit(this.currentTimeFilter);
+                    filtered = filtered.filter(order => new Date(order.orderDate) >= timeLimit);
+                }
+
+                this.filteredOrders = filtered;
+                this.updateOrderDisplay();
+            }
+
+            getTimeLimit(period) {
+                const now = new Date();
+                switch (period) {
+                    case 'week':
+                        return new Date(now.setDate(now.getDate() - 7));
+                    case 'month':
+                        return new Date(now.setMonth(now.getMonth() - 1));
+                    case 'quarter':
+                        return new Date(now.setMonth(now.getMonth() - 3));
+                    case 'year':
+                        return new Date(now.setFullYear(now.getFullYear() - 1));
+                    default:
+                        return new Date(0);
+                }
+            }
+
+            updateFilterButtons() {
+                document.querySelectorAll('.filter-row:first-child .filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+
+            updateTimeFilterButtons() {
+                document.querySelectorAll('.filter-row:last-child .filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+
+            // 訂單操作
+            viewOrderDetail(orderNumber) {
+                const order = this.allOrders.find(o => o.orderNumber === orderNumber);
+                if (!order) {
+                    alert('找不到訂單資訊');
+                    return;
+                }
+
+                // 生成訂單詳情內容
+                const itemsList = order.items.map(item => 
+                    `• ${item.title || item.name || '商品'} x${item.quantity} - NT$${(item.price * item.quantity).toLocaleString()}`
+                ).join('\n');
+
+                const orderDetail = `
+訂單編號: ${order.orderNumber}
+訂購時間: ${new Date(order.orderDate).toLocaleString('zh-TW')}
+付款方式: ${order.paymentMethod}
+訂單金額: NT$${order.totalAmount.toLocaleString()}
+處理狀態: ${order.statusText}
+配送地址: ${order.shippingAddress || '未提供'}
+備註: ${order.notes || '無'}
+
+商品清單:
+${itemsList}
+                `;
+
+                alert(orderDetail);
+                // TODO: 將來會跳轉到詳細的訂單詳情頁面
+            }
+
+            downloadInvoice(orderNumber) {
+                // TODO: 實作發票下載功能
+                alert(`發票下載功能開發中...\n訂單編號: ${orderNumber}`);
+            }
+
+            async cancelOrder(orderNumber) {
+                if (!confirm('確定要取消此訂單嗎？取消後無法復原。')) {
+                    return;
+                }
+
+                try {
+                    this.showLoading('正在取消訂單...');
+                    
+                    await window.bookstoreDB.updateOrderStatus(orderNumber, 'cancelled', '已取消');
+                    
+                    this.showSuccess('訂單已成功取消');
+                    
+                    // 重新載入訂單資料
+                    await this.loadUserOrders();
+                    
+                } catch (error) {
+                    console.error('❌ 取消訂單失敗:', error);
+                    this.showError('取消訂單失敗: ' + error.message);
+                }
+            }
+
+            // 狀態顯示方法
+            showLoading(message) {
+                const indicator = document.getElementById('statusIndicator');
+                indicator.className = 'status-indicator status-loading';
+                indicator.innerHTML = `<div class="loading-spinner"></div> ${message}`;
+                indicator.style.display = 'block';
+            }
+
+            showError(message) {
+                const indicator = document.getElementById('statusIndicator');
+                indicator.className = 'status-indicator status-error';
+                indicator.innerHTML = `❌ ${message}`;
+                indicator.style.display = 'block';
+            }
+
+            showSuccess(message) {
+                const indicator = document.getElementById('statusIndicator');
+                indicator.className = 'status-indicator status-success';
+                indicator.innerHTML = `✅ ${message}`;
+                indicator.style.display = 'block';
+                
+                setTimeout(() => {
+                    this.hideStatus();
+                }, 3000);
+            }
+
+            hideStatus() {
+                const indicator = document.getElementById('statusIndicator');
+                indicator.style.display = 'none';
+            }
+        }
+
+        // 全域變數
+        let orderManager;
+
+        // 全域函數
+        function filterOrders(status) {
+            if (orderManager) {
+                orderManager.filterOrders(status);
+            }
+        }
+
+        function filterByTime(period) {
+            if (orderManager) {
+                orderManager.filterByTime(period);
+            }
+        }
+
+        // 更新購物車數量顯示
+        function updateCartDisplay() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+            const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+            const cartCountElement = document.getElementById('cartCount');
+            if (cartCountElement) {
+                cartCountElement.textContent = cartCount;
+            }
+        }
+
+        // 登出功能
+        function logout() {
+            if (confirm('確定要登出嗎？')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('loginTime');
+                alert('已成功登出');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 側邊欄導航功能
+        function showOrderSearch() {
+            updateActiveMenu(event.target);
+        }
+
+        function showReturnExchange() {
+            alert('退換貨功能開發中...');
+        }
+
+        function showInvoiceManagement() {
+            alert('發票查詢功能開發中...');
+        }
+
+        function showInternationalOrders() {
+            alert('預購清單功能開發中...');
+        }
+
+        function showSubscriptions() {
+            alert('訂閱功能開發中...');
+        }
+
+        function showEbookLibrary() {
+            alert('電子書庫功能開發中...');
+        }
+
+        function showAudiobookLibrary() {
+            alert('有聲書庫功能開發中...');
+        }
+
+        function showDigitalContent() {
+            alert('數位商品庫功能開發中...');
+        }
+
+        function showDownloadHistory() {
+            alert('下載紀錄功能開發中...');
+        }
+
+        function showPersonalInfo() {
+            alert('個人資料管理功能開發中...');
+        }
+
+        function showAccountSettings() {
+            alert('帳戶設定功能開發中...');
+        }
+
+        function showPasswordSettings() {
+            alert('密碼設定功能開發中...');
+        }
+
+        function showSocialAccounts() {
+            alert('社群帳號連結功能開發中...');
+        }
+
+        function showPreferences() {
+            alert('偏好設定功能開發中...');
+        }
+
+        function showAllEbooks() {
+            alert('全部電子書功能開發中...');
+        }
+
+        function showMyEbooks() {
+            alert('我的書庫功能開發中...');
+        }
+
+        function showEbookSubscriptions() {
+            alert('電子書訂閱功能開發中...');
+        }
+
+        // 更新選單激活狀態
+        function updateActiveMenu(target) {
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            target.classList.add('active');
+        }
+
+        // 其他導航功能
+        function showNewReleases() {
+            alert('新書推薦頁面開發中...');
+        }
+
+        function showBestsellers() {
+            alert('暢銷榜頁面開發中...');
+        }
+
+        function showEbooks() {
+            alert('電子書城頁面開發中...');
+        }
+
+        function showMemberCenter() {
+            alert('會員中心首頁開發中...');
+        }
+
+        function toggleLanguage() {
+            alert('語言切換功能開發中...');
+        }
+
+        // 頁面載入時的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 訂單查詢頁面開始載入...');
+            
+            updateCartDisplay();
+            
+            // 初始化訂單管理系統
+            setTimeout(() => {
+                orderManager = new OrderManager();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

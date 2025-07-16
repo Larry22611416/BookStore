@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書客來 - 線上書店</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微軟雅黑", Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* 頂部導航 */
+        .top-nav {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px 0;
+        }
+
+        .top-nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 13px;
+        }
+
+        .nav-left a, .nav-right a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: #4CAF50;
+        }
+
+        .cart-count {
+            color: #ff6b35;
+            font-weight: bold;
+        }
+
+        /* 促銷橫幅 */
+        .promo-banner {
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .promo-banner .highlight {
+            background-color: #ff6b35;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+
+        /* 主要搜尋區域 */
+        .search-section {
+            background-color: #fff;
+            padding: 20px 0;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            margin-right: 30px;
+        }
+
+        .logo h1 {
+            color: #4CAF50;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            max-width: 600px;
+        }
+
+        .category-select {
+            background-color: #f8f8f8;
+            border: 2px solid #4CAF50;
+            border-right: none;
+            padding: 12px 15px;
+            font-size: 14px;
+            border-radius: 25px 0 0 25px;
+            outline: none;
+        }
+
+        .search-input {
+            flex: 1;
+            border: 2px solid #4CAF50;
+            border-left: none;
+            border-right: none;
+            padding: 12px 15px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: 2px solid #4CAF50;
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #45a049;
+        }
+
+        .promo-tags {
+            margin-left: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag {
+            background-color: #ff6b35;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .tag.hot {
+            background-color: #e74c3c;
+        }
+
+        /* 主要內容區域 */
+        .main-content {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        /* 左側分類選單 */
+        .sidebar {
+            width: 250px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .category-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .category-item a {
+            display: block;
+            padding: 12px 15px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .category-item a:hover {
+            background-color: #f8f8f8;
+            color: #4CAF50;
+        }
+
+        .category-item.featured a {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* 主要展示區域 */
+        .content-area {
+            flex: 1;
+        }
+
+        /* 輪播區域 */
+        .carousel-container {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .carousel {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .slide-content h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .slide-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-dot.active {
+            background-color: white;
+        }
+
+        /* 推薦書籍區域 */
+        .book-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .book-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .section-title {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .book-item {
+            text-align: center;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 160px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .book-title {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .book-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* 活動推薦區域 */
+        .activity-section {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .activity-title {
+            color: #4CAF50;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .activity-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .activity-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .activity-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* 橫向捲動書籍推薦區域 */
+        .horizontal-sections {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .horizontal-section {
+            background-color: #fff;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section-badge {
+            background-color: #ff6b35;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .section-badge.today-deal {
+            background-color: #e74c3c;
+        }
+
+        .section-tabs {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tab.highlight {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .tab:not(.active):not(.highlight):hover {
+            background-color: #f0f0f0;
+        }
+
+        .more-link {
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .more-link:hover {
+            text-decoration: underline;
+        }
+
+        .horizontal-scroll-container {
+            position: relative;
+            padding: 20px 25px;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding-bottom: 10px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255,255,255,0.9);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .scroll-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .scroll-left {
+            left: 5px;
+        }
+
+        .scroll-right {
+            right: 5px;
+        }
+
+        .book-card {
+            min-width: 200px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .book-card.deal-card {
+            border: 2px solid #ff6b35;
+        }
+
+        .book-card.bestseller-card {
+            min-width: 180px;
+        }
+
+        .ranking-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .discount-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .book-image {
+            width: 100%;
+            height: 250px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .book-info {
+            padding: 15px;
+        }
+
+        .book-title {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #333;
+            margin-bottom: 10px;
+            height: 35px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .book-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .current-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .original-price {
+            color: #999;
+            font-size: 13px;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background-color: #ff6b35;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+        }
+
+        /* 頁尾樣式 */
+        .footer {
+            background-color: #4CAF50;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .footer-apps {
+            background-color: #fff;
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .app-links {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .app-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s;
+        }
+
+        .app-link:hover {
+            color: #4CAF50;
+        }
+
+        .app-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #ddd;
+            border-radius: 4px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            padding: 40px 20px;
+        }
+
+        .footer-section h4 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section a, .footer-section span {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            background-color: #388E3C;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-info {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-info p {
+            color: rgba(255,255,255,0.8);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .footer-policies {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-policies a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .footer-policies a:hover {
+            color: white;
+        }
+
+        /* 懸浮按鈕 */
+        .floating-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .float-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .customer-service {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .customer-service:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .back-to-top {
+            background-color: #666;
+            color: white;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+
+        /* 載入動畫 */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .promo-tags {
+                margin-left: 0;
+                flex-wrap: wrap;
+            }
+            
+            .book-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .horizontal-sections {
+                padding: 0 10px;
+            }
+
+            .section-tabs {
+                gap: 10px;
+            }
+
+            .tab {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .horizontal-scroll-container {
+                padding: 15px 20px;
+            }
+
+            .book-card {
+                min-width: 160px;
+            }
+
+            .book-image {
+                height: 200px;
+            }
+
+            .app-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 30px 20px;
+            }
+
+            .footer-policies {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .floating-buttons {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .float-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航 -->
+    <div class="top-nav">
+        <div class="container">
+            <div class="nav-left">
+                <a href="#" onclick="goHome()">回首頁</a>
+                <a href="#" onclick="showNewReleases()">新書推薦</a>
+                <a href="#" onclick="showBestsellers()">暢銷榜</a>
+                <a href="#" onclick="showEbooks()">電子書城</a>
+            </div>
+            <div class="nav-right">
+                <a href="#" onclick="showLogin()">會員登入</a>
+                <a href="#" onclick="showOrders()">訂單查詢</a>
+                <a href="shopping.html">購物車(<span class="cart-count" id="cartCount">0</span>)</a>
+                <a href="#" onclick="toggleLanguage()">繁體</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 促銷橫幅 -->
+    <div class="promo-banner">
+        📚 讀書日特惠 <span class="highlight">全站書籍滿$500免運</span> 再享<span class="highlight">85折</span>起 📚
+    </div>
+
+    <!-- 搜尋區域 -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="logo">
+                <h1>書客來</h1>
+            </div>
+            <div class="search-box">
+                <select class="category-select" id="searchCategory">
+                    <option value="all">全部</option>
+                    <option value="chinese">中文書</option>
+                    <option value="english">外文書</option>
+                    <option value="ebook">電子書</option>
+                    <option value="magazine">雜誌</option>
+                </select>
+                <input type="text" class="search-input" placeholder="請輸入關鍵字" id="searchInput">
+                <button class="search-btn" onclick="performSearch()">搜尋</button>
+            </div>
+            <div class="promo-tags">
+                <a href="#" class="tag hot">HOT</a>
+                <a href="#" class="tag" onclick="quickSearch('電子書')">電子書特價</a>
+                <a href="#" class="tag" onclick="quickSearch('推薦書')">本月選書</a>
+                <a href="#" class="tag" onclick="quickSearch('文學小說')">暢銷文學</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="main-content">
+        <!-- 左側分類選單 -->
+        <div class="sidebar">
+            <div class="category-header">
+                全站分類
+            </div>
+            <ul class="category-list">
+                <li class="category-item featured"><a onclick="showCategory('featured')">旗艦書展</a></li>
+                <li class="category-item"><a onclick="showCategory('chinese')">中文書</a></li>
+                <li class="category-item"><a onclick="showCategory('simplified')">簡體書</a></li>
+                <li class="category-item"><a onclick="showCategory('english')">外文書</a></li>
+                <li class="category-item"><a onclick="showCategory('ebook')">電子書</a></li>
+                <li class="category-item"><a onclick="showCategory('audiobook')">有聲書</a></li>
+                <li class="category-item"><a onclick="showCategory('subscription')">訂閱服務</a></li>
+                <li class="category-item"><a onclick="showCategory('magazine')">雜誌</a></li>
+                <li class="category-item"><a onclick="showCategory('japanese')">日文書</a></li>
+                <li class="category-item"><a onclick="showCategory('textbook')">教科書</a></li>
+                <li class="category-item"><a onclick="showCategory('reference')">參考書</a></li>
+            </ul>
+        </div>
+
+        <!-- 主要展示區域 -->
+        <div class="content-area">
+            <!-- 輪播廣告 -->
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-slide">
+                        <div class="slide-content">
+                            <h2>新書上市</h2>
+                            <p>探索最新出版的精彩書籍</p>
+                        </div>
+                    </div>
+                    <div class="carousel-nav">
+                        <div class="nav-dot active"></div>
+                        <div class="nav-dot"></div>
+                        <div class="nav-dot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 書籍推薦區域 -->
+            <div class="book-sections">
+                <div class="book-section">
+                    <div class="section-title">本週暢銷</div>
+                    <div class="book-grid">
+                        <!-- 書籍將通過 JavaScript 動態載入 -->
+                    </div>
+                </div>
+
+                <div class="book-section">
+                    <div class="section-title">編輯推薦</div>
+                    <div class="book-grid">
+                        <!-- 書籍將通過 JavaScript 動態載入 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 活動推薦 -->
+            <div class="activity-section">
+                <div class="activity-card">
+                    <div class="activity-title">📖 好讀活動</div>
+                    <div class="activity-desc">每日精選好書推薦，開啟閱讀新體驗</div>
+                    <a href="#" class="activity-btn" onclick="showActivity('reading')">立即參與</a>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-title">🎯 會員專屬優惠</div>
+                    <div class="activity-desc">會員獨享折扣，購書更優惠</div>
+                    <a href="#" class="activity-btn" onclick="showActivity('member')">查看優惠</a>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-title">⭐ 每日簽到</div>
+                    <div class="activity-desc">天天簽到累積點數，兌換購書金</div>
+                    <a href="#" class="activity-btn" onclick="showActivity('checkin')">馬上簽到</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 橫向捲動書籍推薦區域 -->
+    <div class="horizontal-sections">
+        <!-- 今日66折 -->
+        <div class="horizontal-section">
+            <div class="section-header">
+                <div class="section-badge today-deal">📚 今日66折</div>
+                <a href="#" class="more-link">更多 ></a>
+            </div>
+            <div class="horizontal-scroll-container">
+                <button class="scroll-btn scroll-left" onclick="scrollHorizontal('today-deals', -1)">‹</button>
+                <div class="horizontal-scroll" id="today-deals">
+                    <!-- 書籍將通過 JavaScript 動態載入 -->
+                </div>
+                <button class="scroll-btn scroll-right" onclick="scrollHorizontal('today-deals', 1)">›</button>
+            </div>
+        </div>
+
+        <!-- 中文出版推薦 -->
+        <div class="horizontal-section">
+            <div class="section-header">
+                <div class="section-tabs">
+                    <span class="tab active">中文出版</span>
+                    <span class="tab highlight">關讀注目</span>
+                    <span class="tab">博客來選書</span>
+                    <span class="tab">熱銷新書</span>
+                    <span class="tab">商業理財</span>
+                    <span class="tab">人文藝術</span>
+                    <span class="tab">心理勵志</span>
+                    <span class="tab">小說‧漫畫</span>
+                </div>
+                <a href="#" class="more-link">更多 ></a>
+            </div>
+            <div class="horizontal-scroll-container">
+                <button class="scroll-btn scroll-left" onclick="scrollHorizontal('chinese-books', -1)">‹</button>
+                <div class="horizontal-scroll" id="chinese-books">
+                    <!-- 書籍將通過 JavaScript 動態載入 -->
+                </div>
+                <button class="scroll-btn scroll-right" onclick="scrollHorizontal('chinese-books', 1)">›</button>
+            </div>
+        </div>
+
+        <!-- 必讀暢銷榜 -->
+        <div class="horizontal-section">
+            <div class="section-header">
+                <div class="section-tabs">
+                    <span class="tab active">全站</span>
+                    <span class="tab">中文書</span>
+                    <span class="tab">電子書</span>
+                    <span class="tab">有聲書</span>
+                    <span class="tab">動漫</span>
+                    <span class="tab">簡體書</span>
+                    <span class="tab">日文書</span>
+                    <span class="tab more-tab" onclick="showMoreTabs()">看更多 ></span>
+                </div>
+            </div>
+            <div class="horizontal-scroll-container">
+                <button class="scroll-btn scroll-left" onclick="scrollHorizontal('bestseller-books', -1)">‹</button>
+                <div class="horizontal-scroll" id="bestseller-books">
+                    <!-- 書籍將通過 JavaScript 動態載入 -->
+                </div>
+                <button class="scroll-btn scroll-right" onclick="scrollHorizontal('bestseller-books', 1)">›</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="footer-apps">
+            <div class="app-links">
+                <a href="#" class="app-link">
+                    <img src="#" alt="App圖標" class="app-icon">
+                    <span>書客來 App 下載</span>
+                </a>
+                <a href="#" class="app-link">
+                    <img src="#" alt="電子書App圖標" class="app-icon">
+                    <span>書客來 電子書App 下載</span>
+                </a>
+                <a href="#" class="app-link">
+                    <img src="#" alt="Facebook圖標" class="app-icon">
+                    <span>書客來 Facebook粉絲專頁</span>
+                </a>
+                <a href="#" class="app-link">
+                    <img src="#" alt="YouTube圖標" class="app-icon">
+                    <span>書客來 YouTube</span>
+                </a>
+                <a href="#" class="app-link">
+                    <img src="#" alt="LINE圖標" class="app-icon">
+                    <span>書客來 LINE 官方帳號</span>
+                </a>
+                <a href="#" class="app-link">
+                    <span>📱 切換行動版</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>關於我們</h4>
+                <ul>
+                    <li><a href="#">關於書客來</a></li>
+                    <li><a href="#">人才募集</a></li>
+                    <li><a href="#">利害關係人專區</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>企業合作</h4>
+                <ul>
+                    <li><a href="#">企業採購</a></li>
+                    <li><a href="#">福利平台</a></li>
+                    <li><a href="#">成為供應商</a></li>
+                    <li><a href="#">異業合作</a></li>
+                    <li><a href="#">廣告刊登</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>好站連結</h4>
+                <ul>
+                    <li><a href="#">OKAPI 閱讀生活誌</a></li>
+                    <li><a href="#">青春書客來</a></li>
+                    <li><a href="#">高中生書店</a></li>
+                    <li><a href="#">售票網</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>會員服務</h4>
+                <ul>
+                    <li><a href="#">會員專區</a></li>
+                    <li><a href="#">加入會員</a></li>
+                    <li><a href="#">會員分級</a></li>
+                    <li><a href="#">查詢帳號密碼</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>客服中心</h4>
+                <ul>
+                    <li><a href="#">🔍 常見問題</a></li>
+                    <li><a href="#">📞 線上客服</a></li>
+                    <li><a href="#">✉️ 客服信箱</a></li>
+                    <li><span>📅 週一～五 08:00 - 19:00</span></li>
+                    <li><span>週六、例假日線上客服</span></li>
+                    <li><span>09:00-12:30；13:30-18:00</span></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-info">
+                <p>書客來數位科技股份有限公司  統編：96922355  地址：臺灣 115 台北市南港區八德路四段768巷1弄18號B1之1</p>
+                <p>Copyright © since 1995 books.com.tw All Rights Reserved.</p>
+            </div>
+            <div class="footer-policies">
+                <a href="#">資訊安全</a>
+                <a href="#">服務條款</a>
+                <a href="#">隱私權政策</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 右下角懸浮按鈕 -->
+    <div class="floating-buttons">
+        <button class="float-btn customer-service" onclick="openCustomerService()" title="客服">
+            💬
+        </button>
+        <button class="float-btn back-to-top" onclick="backToTop()" title="回到頂部">
+            ⬆️
+        </button>
+    </div>
+
+    <!-- Google Books API -->
+    <script src="js/google-books.js"></script>
+    <script>
+        // 書籍資料管理器
+        class BookDataManager {
+            constructor() {
+                this.booksData = {
+                    bestsellers: [],        // 本週暢銷
+                    editorial: [],          // 編輯推薦  
+                    todayDeals: [],         // 今日66折
+                    chineseBooks: [],       // 中文出版
+                    allBestsellers: [],     // 必讀暢銷榜
+                    featured: [],           // 關讀注目
+                    business: [],           // 商業理財
+                    psychology: [],         // 心理勵志
+                    fiction: []             // 小說
+                };
+                this.isLoading = false;
+                this.loadAttempts = 0;
+                this.maxAttempts = 3;
+            }
+
+            // 載入所有分類的書籍資料
+            async loadAllBooks() {
+                if (this.isLoading) return;
+                
+                this.isLoading = true;
+                this.loadAttempts++;
+                
+                console.log(`🚀 開始載入所有書籍資料 (嘗試 ${this.loadAttempts}/${this.maxAttempts})`);
+                
+                try {
+                    // 顯示載入指示器
+                    this.showLoadingIndicator();
+                    
+                    // 定義各區域要載入的書籍類型和數量
+                    const loadTasks = [
+                        { category: 'bestsellers', query: '暢銷書', count: 6 },
+                        { category: 'editorial', query: '文學小說', count: 6 },
+                        { category: 'todayDeals', query: '商業理財', count: 8 },
+                        { category: 'chineseBooks', query: '心理勵志', count: 8 },
+                        { category: 'allBestsellers', query: '科普', count: 10 },
+                        { category: 'featured', query: '歷史', count: 6 },
+                        { category: 'business', query: '投資理財', count: 6 },
+                        { category: 'psychology', query: '自我提升', count: 6 },
+                        { category: 'fiction', query: '推理小說', count: 6 }
+                    ];
+
+                    // 並行載入所有分類的書籍
+                    const results = await Promise.allSettled(
+                        loadTasks.map(task => this.loadCategoryBooks(task.category, task.query, task.count))
+                    );
+
+                    // 檢查載入結果
+                    let successCount = 0;
+                    results.forEach((result, index) => {
+                        if (result.status === 'fulfilled' && result.value > 0) {
+                            successCount++;
+                            console.log(`✅ ${loadTasks[index].category}: ${result.value} 本書`);
+                        } else {
+                            console.warn(`⚠️ ${loadTasks[index].category}: 載入失敗`);
+                        }
+                    });
+
+                    if (successCount === 0) {
+                        throw new Error('所有分類載入失敗');
+                    }
+
+                    // 更新頁面顯示
+                    this.updateAllDisplays();
+                    
+                    // 隱藏載入指示器
+                    this.hideLoadingIndicator();
+                    
+                    // 顯示載入成功通知
+                    this.showSuccessNotification(successCount, loadTasks.length);
+                    
+                    console.log(`🎉 載入完成: ${successCount}/${loadTasks.length} 個分類成功`);
+                    
+                } catch (error) {
+                    console.error('❌ 載入書籍資料失敗:', error);
+                    
+                    this.hideLoadingIndicator();
+                    
+                    // 如果還有重試機會，稍後重試
+                    if (this.loadAttempts < this.maxAttempts) {
+                        console.log(`🔄 ${3}秒後重試...`);
+                        setTimeout(() => {
+                            this.isLoading = false;
+                            this.loadAllBooks();
+                        }, 3000);
+                        return;
+                    }
+                    
+                    // 使用備用資料
+                    this.loadFallbackData();
+                    this.updateAllDisplays();
+                    this.showErrorNotification();
+                }
+                
+                this.isLoading = false;
+            }
+
+            // 載入特定分類的書籍
+            async loadCategoryBooks(category, query, count) {
+                try {
+                    console.log(`📚 載入 ${category}: "${query}"`);
+                    const books = await window.googleBooksAPI.searchBooks(query, count);
+                    
+                    if (books && books.length > 0) {
+                        this.booksData[category] = books;
+                        return books.length;
+                    } else {
+                        // 如果沒有結果，嘗試更通用的查詢
+                        const fallbackQuery = this.getFallbackQuery(category);
+                        const fallbackBooks = await window.googleBooksAPI.searchBooks(fallbackQuery, count);
+                        this.booksData[category] = fallbackBooks || [];
+                        return fallbackBooks ? fallbackBooks.length : 0;
+                    }
+                    
+                } catch (error) {
+                    console.error(`載入 ${category} 失敗:`, error);
+                    this.booksData[category] = [];
+                    return 0;
+                }
+            }
+
+            // 獲取備用查詢關鍵字
+            getFallbackQuery(category) {
+                const fallbackMap = {
+                    bestsellers: '熱門',
+                    editorial: '文學',
+                    todayDeals: '商業',
+                    chineseBooks: '心理',
+                    allBestsellers: '科學',
+                    featured: '歷史',
+                    business: '經濟',
+                    psychology: '勵志',
+                    fiction: '小說'
+                };
+                return fallbackMap[category] || '書籍';
+            }
+
+            // 載入備用資料
+            loadFallbackData() {
+                console.log('📖 載入備用書籍資料');
+                
+                const fallbackBook = (id, title, price, category) => ({
+                    id: `fallback_${id}`,
+                    title: title,
+                    author: '知名作者',
+                    currentPrice: price,
+                    originalPrice: Math.floor(price * 1.3),
+                    discountRate: '79折',
+                    imageUrl: `https://via.placeholder.com/200x280/4CAF50/ffffff?text=${encodeURIComponent(title.substring(0, 6))}`,
+                    categories: [category],
+                    rating: (Math.random() * 2 + 3).toFixed(1),
+                    reviewCount: Math.floor(Math.random() * 100) + 20,
+                    description: `這是一本關於 ${category} 的優秀書籍。`,
+                    source: 'fallback'
+                });
+
+                // 為每個分類創建備用書籍
+                this.booksData.bestsellers = [
+                    fallbackBook(1, '熱門暢銷書籍', 299, '暢銷書'),
+                    fallbackBook(2, '經典文學作品', 350, '文學'),
+                    fallbackBook(3, '實用生活指南', 280, '生活')
+                ];
+
+                this.booksData.editorial = [
+                    fallbackBook(4, '編輯精選好書', 320, '精選'),
+                    fallbackBook(5, '必讀經典作品', 380, '經典'),
+                    fallbackBook(6, '新銳作家作品', 260, '新書')
+                ];
+
+                this.booksData.todayDeals = [
+                    fallbackBook(7, '今日特價書籍', 199, '特價'),
+                    fallbackBook(8, '限時優惠精選', 250, '優惠'),
+                    fallbackBook(9, '超值推薦書目', 180, '推薦')
+                ];
+
+                // 為其他分類也創建類似的備用資料
+                Object.keys(this.booksData).forEach(category => {
+                    if (this.booksData[category].length === 0) {
+                        this.booksData[category] = [
+                            fallbackBook(`${category}_1`, `${category}精選`, 299, category),
+                            fallbackBook(`${category}_2`, `${category}推薦`, 350, category),
+                            fallbackBook(`${category}_3`, `${category}必讀`, 280, category)
+                        ];
+                    }
+                });
+            }
+
+            // 更新所有書籍顯示區域
+            updateAllDisplays() {
+                try {
+                    console.log('🎨 更新所有書籍顯示區域');
+                    
+                    // 更新主要推薦區域
+                    this.updateMainRecommendations();
+                    
+                    // 更新橫向捲動區域
+                    this.updateHorizontalSections();
+                    
+                    // 為所有書籍添加事件監聽器
+                    this.attachEventListeners();
+                    
+                    console.log('✅ 所有顯示區域更新完成');
+                    
+                } catch (error) {
+                    console.error('❌ 更新顯示失敗:', error);
+                }
+            }
+
+            // 更新主要推薦區域
+            updateMainRecommendations() {
+                // 更新本週暢銷
+                this.updateBookGrid('bestsellers', this.booksData.bestsellers.slice(0, 3));
+                
+                // 更新編輯推薦
+                this.updateBookGrid('editorial', this.booksData.editorial.slice(0, 3));
+            }
+
+            // 更新書籍網格
+            updateBookGrid(sectionType, books) {
+                const sectionTitles = {
+                    bestsellers: '本週暢銷',
+                    editorial: '編輯推薦'
+                };
+                
+                // 找到對應的區域
+                const sections = document.querySelectorAll('.book-section');
+                let targetSection = null;
+                
+                sections.forEach(section => {
+                    const titleElement = section.querySelector('.section-title');
+                    if (titleElement && titleElement.textContent === sectionTitles[sectionType]) {
+                        targetSection = section;
+                    }
+                });
+                
+                if (!targetSection) return;
+                
+                const bookGrid = targetSection.querySelector('.book-grid');
+                if (!bookGrid) return;
+                
+                // 清空現有內容
+                bookGrid.innerHTML = '';
+                
+                // 添加新的書籍項目
+                books.forEach(book => {
+                    const bookItem = this.createBookItem(book);
+                    bookGrid.appendChild(bookItem);
+                });
+            }
+
+            // 創建書籍項目元素
+            createBookItem(book) {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item';
+                bookItem.style.cursor = 'pointer';
+                
+                const price = typeof book.currentPrice === 'number' ? 
+                    `$${book.currentPrice}` : 
+                    (book.currentPrice || '$299');
+                    
+                const originalPrice = book.originalPrice ? 
+                    `<span style="color: #999; text-decoration: line-through; font-size: 12px; margin-left: 5px;">$${book.originalPrice}</span>` : 
+                    '';
+                
+                bookItem.innerHTML = `
+                    <div class="book-cover" style="background-image: url('${book.imageUrl}'); background-size: cover; background-position: center; position: relative;">
+                        ${book.imageUrl.includes('placeholder') ? 
+                            `<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(76, 175, 80, 0.1); color: #4CAF50; font-size: 11px; text-align: center; padding: 5px;">${book.title.substring(0, 10)}...</div>` : 
+                            ''
+                        }
+                    </div>
+                    <div class="book-title" title="${book.title}">${book.title.length > 20 ? book.title.substring(0, 20) + '...' : book.title}</div>
+                    <div class="book-price">
+                        <span style="color: #e74c3c; font-weight: bold;">${price}</span>
+                        ${originalPrice}
+                    </div>
+                    <button class="add-to-cart-btn" style="
+                        width: 100%;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        padding: 8px;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        margin-top: 8px;
+                        font-size: 12px;
+                        transition: background-color 0.3s;
+                    ">加入購物車</button>
+                `;
+                
+                // 添加事件監聽器
+                bookItem.addEventListener('click', (e) => {
+                    if (!e.target.closest('.add-to-cart-btn')) {
+                        this.navigateToProduct(book);
+                    }
+                });
+                
+                const addToCartBtn = bookItem.querySelector('.add-to-cart-btn');
+                addToCartBtn.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#45a049';
+                });
+                addToCartBtn.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '#4CAF50';
+                });
+                addToCartBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.addToCart(book);
+                });
+                
+                return bookItem;
+            }
+
+            // 更新橫向捲動區域
+            updateHorizontalSections() {
+                // 更新今日66折
+                this.updateTodayDeals();
+                
+                // 更新中文出版推薦
+                this.updateChineseBooks();
+                
+                // 更新必讀暢銷榜
+                this.updateBestsellerRanking();
+            }
+
+            // 更新今日66折區域
+            updateTodayDeals() {
+                const container = document.getElementById('today-deals');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const books = this.booksData.todayDeals.slice(0, 6);
+                books.forEach(book => {
+                    const bookCard = this.createDealCard(book);
+                    container.appendChild(bookCard);
+                });
+            }
+
+            // 創建特價書籍卡片
+            createDealCard(book) {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card deal-card';
+                bookCard.style.cursor = 'pointer';
+                
+                const currentPrice = typeof book.currentPrice === 'number' ? book.currentPrice : 299;
+                const originalPrice = book.originalPrice || Math.floor(currentPrice * 1.5);
+                const discountRate = book.discountRate || '66折';
+                
+                bookCard.innerHTML = `
+                    <div class="book-image" style="background-image: url('${book.imageUrl}'); background-size: cover; background-position: center;">
+                        ${book.imageUrl.includes('placeholder') ? book.title.substring(0, 6) : ''}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title" title="${book.title}">${book.title.length > 25 ? book.title.substring(0, 25) + '...' : book.title}</div>
+                        <div class="book-price">
+                            <span class="current-price">$${currentPrice}</span>
+                            <span class="original-price">$${originalPrice}</span>
+                            <span class="discount-badge">${discountRate}</span>
+                        </div>
+                    </div>
+                    <button class="quick-buy-btn" style="
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        width: 30px;
+                        height: 30px;
+                        background-color: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        font-size: 14px;
+                        transition: all 0.3s;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    " title="加入購物車">🛒</button>
+                `;
+                
+                // 添加事件監聽器
+                bookCard.addEventListener('click', (e) => {
+                    if (!e.target.closest('.quick-buy-btn')) {
+                        this.navigateToProduct(book);
+                    }
+                });
+                
+                const quickBuyBtn = bookCard.querySelector('.quick-buy-btn');
+                quickBuyBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.backgroundColor = '#45a049';
+                });
+                quickBuyBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.backgroundColor = '#4CAF50';
+                });
+                quickBuyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.addToCart(book);
+                });
+                
+                return bookCard;
+            }
+
+            // 更新中文出版推薦
+            updateChineseBooks() {
+                const container = document.getElementById('chinese-books');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const books = this.booksData.chineseBooks.slice(0, 6);
+                books.forEach(book => {
+                    const bookCard = this.createRegularCard(book);
+                    container.appendChild(bookCard);
+                });
+            }
+
+            // 更新必讀暢銷榜
+            updateBestsellerRanking() {
+                const container = document.getElementById('bestseller-books');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                const books = this.booksData.allBestsellers.slice(0, 6);
+                books.forEach((book, index) => {
+                    const bookCard = this.createRankingCard(book, index + 1);
+                    container.appendChild(bookCard);
+                });
+            }
+
+            // 創建一般書籍卡片
+            createRegularCard(book) {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.style.cursor = 'pointer';
+                
+                const price = typeof book.currentPrice === 'number' ? book.currentPrice : 299;
+                const discountRate = book.discountRate || '79折';
+                
+                bookCard.innerHTML = `
+                    <div class="discount-label">${discountRate}</div>
+                    <div class="book-image" style="background-image: url('${book.imageUrl}'); background-size: cover; background-position: center;">
+                        ${book.imageUrl.includes('placeholder') ? book.title.substring(0, 6) : ''}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title" title="${book.title}">${book.title.length > 30 ? book.title.substring(0, 30) + '...' : book.title}</div>
+                        <div class="book-price">
+                            <span class="current-price">$${price}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // 添加點擊事件
+                bookCard.addEventListener('click', () => {
+                    this.navigateToProduct(book);
+                });
+                
+                return bookCard;
+            }
+
+            // 創建排行榜書籍卡片
+            createRankingCard(book, ranking) {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card bestseller-card';
+                bookCard.style.cursor = 'pointer';
+                
+                const price = typeof book.currentPrice === 'number' ? book.currentPrice : 299;
+                const discountRate = book.discountRate || '79折';
+                
+                bookCard.innerHTML = `
+                    <div class="ranking-number">${ranking}</div>
+                    <div class="discount-label">${discountRate}</div>
+                    <div class="book-image" style="background-image: url('${book.imageUrl}'); background-size: cover; background-position: center;">
+                        ${book.imageUrl.includes('placeholder') ? book.title.substring(0, 6) : ''}
+                    </div>
+                    <div class="book-info">
+                        <div class="book-title" title="${book.title}">${book.title.length > 25 ? book.title.substring(0, 25) + '...' : book.title}</div>
+                        <div class="book-price">
+                            <span class="current-price">$${price}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // 添加點擊事件
+                bookCard.addEventListener('click', () => {
+                    this.navigateToProduct(book);
+                });
+                
+                return bookCard;
+            }
+
+            // 跳轉到商品詳情頁面
+            navigateToProduct(book) {
+                console.log('🔗 跳轉到商品頁面:', book.title);
+                
+                try {
+                    // 保存書籍資料到 sessionStorage
+                    sessionStorage.setItem('currentProduct', JSON.stringify(book));
+                    sessionStorage.setItem('referrerPage', 'homepage');
+                    
+                    // 跳轉到商品詳情頁面
+                    window.location.href = `product.html?id=${book.id}`;
+                    
+                } catch (error) {
+                    console.error('跳轉失敗:', error);
+                    alert('頁面跳轉失敗，請重試');
+                }
+            }
+
+            // 加入購物車
+            addToCart(book) {
+                console.log('🛒 加入購物車:', book.title);
+                
+                try {
+                    let cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+                    
+                    const existingItem = cartItems.find(item => item.id === book.id);
+                    
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                    } else {
+                        cartItems.push({
+                            id: book.id,
+                            title: book.title,
+                            price: book.currentPrice || 299,
+                            originalPrice: book.originalPrice,
+                            note: book.note || '來自首頁推薦',
+                            quantity: 1,
+                            stock: '有',
+                            selected: true
+                        });
+                    }
+                    
+                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                    
+                    // 更新購物車數量顯示
+                    this.updateCartDisplay();
+                    
+                    // 顯示成功訊息
+                    this.showAddToCartMessage(book.title);
+                    
+                } catch (error) {
+                    console.error('加入購物車失敗:', error);
+                    alert('加入購物車失敗，請重試');
+                }
+            }
+
+            // 更新購物車數量顯示
+            updateCartDisplay() {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+                const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+                const cartCountElement = document.getElementById('cartCount');
+                if (cartCountElement) {
+                    cartCountElement.textContent = cartCount;
+                }
+            }
+
+            // 顯示加入購物車成功訊息
+            showAddToCartMessage(bookTitle) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                    font-size: 14px;
+                `;
+                notification.innerHTML = `
+                    <strong>✅ 已加入購物車</strong><br>
+                    ${bookTitle}
+                    <div style="margin-top: 8px;">
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: none; border: 1px solid white; color: white; padding: 4px 8px; border-radius: 3px; cursor: pointer; margin-right: 8px;">
+                            關閉
+                        </button>
+                        <button onclick="window.location.href='shopping.html'" 
+                                style="background: white; border: none; color: #4CAF50; padding: 4px 8px; border-radius: 3px; cursor: pointer;">
+                            查看購物車
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 3000);
+            }
+
+            // 為標籤切換功能添加真實書籍載入
+            async switchTab(tabType, element) {
+                // 移除同級別的active class
+                const parentTabs = element.parentElement;
+                parentTabs.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // 添加active class到當前標籤
+                element.classList.add('active');
+                
+                console.log(`🔄 切換到標籤: ${tabType}`);
+                
+                // 根據標籤類型載入對應的書籍
+                await this.loadTabBooks(tabType);
+            }
+
+            // 根據標籤載入書籍
+            async loadTabBooks(tabType) {
+                const tabQueries = {
+                    'chinese': '中文書',
+                    'featured': '推薦書',
+                    'blogger': '博客來',
+                    'bestseller': '暢銷書',
+                    'business': '商業理財',
+                    'humanities': '人文藝術',
+                    'psychology': '心理勵志',
+                    'fiction': '小說漫畫',
+                    'bestseller-all': '全站暢銷',
+                    'bestseller-chinese': '中文暢銷',
+                    'bestseller-ebook': '電子書',
+                    'bestseller-audio': '有聲書'
+                };
+                
+                const query = tabQueries[tabType] || '推薦書';
+                
+                try {
+                    console.log(`📚 載入標籤書籍: ${query}`);
+                    const books = await window.googleBooksAPI.searchBooks(query, 8);
+                    
+                    if (books && books.length > 0) {
+                        // 根據標籤類型更新對應的容器
+                        if (tabType.startsWith('bestseller-')) {
+                            this.updateBestsellerContainer(books);
+                        } else {
+                            this.updateChineseBooksContainer(books);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error(`載入標籤 ${tabType} 失敗:`, error);
+                }
+            }
+
+            // 更新中文書容器
+            updateChineseBooksContainer(books) {
+                const container = document.getElementById('chinese-books');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                books.slice(0, 6).forEach(book => {
+                    const bookCard = this.createRegularCard(book);
+                    container.appendChild(bookCard);
+                });
+            }
+
+            // 更新暢銷榜容器
+            updateBestsellerContainer(books) {
+                const container = document.getElementById('bestseller-books');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                books.slice(0, 6).forEach((book, index) => {
+                    const bookCard = this.createRankingCard(book, index + 1);
+                    container.appendChild(bookCard);
+                });
+            }
+
+            // 附加事件監聽器
+            attachEventListeners() {
+                // 為標籤切換添加事件監聽器
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tabType = e.target.textContent.trim();
+                        const tabTypeMap = {
+                            '中文出版': 'chinese',
+                            '關讀注目': 'featured',
+                            '博客來選書': 'blogger',
+                            '熱銷新書': 'bestseller',
+                            '商業理財': 'business',
+                            '人文藝術': 'humanities',
+                            '心理勵志': 'psychology',
+                            '小說‧漫畫': 'fiction',
+                            '全站': 'bestseller-all',
+                            '中文書': 'bestseller-chinese',
+                            '電子書': 'bestseller-ebook',
+                            '有聲書': 'bestseller-audio'
+                        };
+                        
+                        const mappedType = tabTypeMap[tabType] || 'featured';
+                        this.switchTab(mappedType, e.target);
+                    });
+                });
+            }
+
+            // 顯示載入指示器
+            showLoadingIndicator() {
+                if (document.getElementById('homepageLoadingIndicator')) return;
+                
+                const indicator = document.createElement('div');
+                indicator.id = 'homepageLoadingIndicator';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: rgba(255, 255, 255, 0.95);
+                    padding: 30px;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+                    z-index: 1000;
+                    text-align: center;
+                `;
+                
+                indicator.innerHTML = `
+                    <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
+                    <p style="color: #666; font-size: 16px; margin: 0;">正在載入書籍資料...</p>
+                    <p style="color: #999; font-size: 12px; margin: 5px 0 0 0;">首次載入可能需要較長時間</p>
+                `;
+                
+                document.body.appendChild(indicator);
+            }
+
+            // 隱藏載入指示器
+            hideLoadingIndicator() {
+                const indicator = document.getElementById('homepageLoadingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+            }
+
+            // 顯示載入成功通知
+            showSuccessNotification(successCount, totalCount) {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    font-size: 14px;
+                `;
+                notification.textContent = `✅ 書籍載入完成！成功載入 ${successCount}/${totalCount} 個分類`;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 3000);
+            }
+
+            // 顯示載入失敗通知
+            showErrorNotification() {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #ff9800;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    font-size: 14px;
+                `;
+                notification.innerHTML = `
+                    ⚠️ API 載入失敗，使用範例資料<br>
+                    <small>請檢查網路連線或稍後重試</small>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 4000);
+            }
+        }
+
+        // 創建全域書籍資料管理器實例
+        window.bookManager = new BookDataManager();
+
+        // 搜尋功能增強版
+        async function performSearch() {
+            const category = document.getElementById('searchCategory').value;
+            const keyword = document.getElementById('searchInput').value.trim();
+            
+            if (keyword === '') {
+                alert('請輸入搜尋關鍵字');
+                document.getElementById('searchInput').focus();
+                return;
+            }
+            
+            // 顯示搜尋中狀態
+            const searchBtn = document.querySelector('.search-btn');
+            const originalText = searchBtn.textContent;
+            searchBtn.textContent = '搜尋中...';
+            searchBtn.disabled = true;
+            
+            try {
+                console.log(`🔍 執行搜尋: ${category} - ${keyword}`);
+                
+                // 先快速檢查是否能獲取到結果
+                const testResults = await window.googleBooksAPI.searchBooks(keyword, 3);
+                
+                if (testResults && testResults.length > 0) {
+                    console.log(`✅ 找到 ${testResults.length} 個結果，跳轉到搜尋頁面`);
+                    
+                    // 預先保存搜尋結果到 sessionStorage
+                    sessionStorage.setItem('lastSearchResults', JSON.stringify(testResults));
+                    sessionStorage.setItem('lastSearchQuery', keyword);
+                    sessionStorage.setItem('lastSearchCategory', category);
+                    
+                    // 跳轉到搜尋結果頁面
+                    const searchUrl = `search-results.html?q=${encodeURIComponent(keyword)}&category=${encodeURIComponent(category)}`;
+                    window.location.href = searchUrl;
+                } else {
+                    // 沒有找到結果，但仍然跳轉（搜尋頁面會處理無結果的情況）
+                    console.log('⚠️ 沒有找到結果，但仍跳轉到搜尋頁面');
+                    const searchUrl = `search-results.html?q=${encodeURIComponent(keyword)}&category=${encodeURIComponent(category)}`;
+                    window.location.href = searchUrl;
+                }
+                
+            } catch (error) {
+                console.error('❌ 搜尋失敗:', error);
+                
+                // 即使搜尋失敗也跳轉，讓搜尋頁面處理錯誤
+                const searchUrl = `search-results.html?q=${encodeURIComponent(keyword)}&category=${encodeURIComponent(category)}`;
+                window.location.href = searchUrl;
+            } finally {
+                // 恢復按鈕狀態（雖然頁面會跳轉，但以防萬一）
+                setTimeout(() => {
+                    searchBtn.textContent = originalText;
+                    searchBtn.disabled = false;
+                }, 100);
+            }
+        }
+
+        // 快速搜尋功能（供標籤使用）
+        function quickSearch(keyword) {
+            document.getElementById('searchInput').value = keyword;
+            document.getElementById('searchCategory').value = 'all';
+            performSearch();
+        }
+
+        // 登入狀態檢查和更新
+        function checkAndUpdateLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userEmail = localStorage.getItem('userEmail');
+            
+            const loginLinks = document.querySelectorAll('.nav-right a');
+            let loginLink = null;
+            
+            // 找到登入連結
+            loginLinks.forEach(link => {
+                if (link.textContent.includes('會員登入') || link.textContent.includes('歡迎')) {
+                    loginLink = link;
+                }
+            });
+            
+            if (!loginLink) return;
+            
+            if (isLoggedIn === 'true' && userEmail) {
+                const displayName = userEmail.split('@')[0];
+                loginLink.textContent = `歡迎，${displayName}`;
+                loginLink.onclick = function(e) {
+                    e.preventDefault();
+                    showUserMenu();
+                };
+                loginLink.style.color = '#4CAF50';
+                loginLink.style.fontWeight = 'bold';
+            } else {
+                loginLink.textContent = '會員登入';
+                loginLink.onclick = function(e) {
+                    e.preventDefault();
+                    showLogin();
+                };
+                loginLink.style.color = '';
+                loginLink.style.fontWeight = '';
+            }
+        }
+
+        // 顯示用戶選單
+        function showUserMenu() {
+            const existingMenu = document.getElementById('userDropdownMenu');
+            if (existingMenu) {
+                existingMenu.remove();
+                return;
+            }
+            
+            const menu = document.createElement('div');
+            menu.id = 'userDropdownMenu';
+            menu.style.cssText = `
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background: white;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                z-index: 1000;
+                min-width: 150px;
+            `;
+            
+            const userEmail = localStorage.getItem('userEmail');
+            
+            menu.innerHTML = `
+                <div style="padding: 10px; border-bottom: 1px solid #eee; font-size: 12px; color: #666;">
+                    ${userEmail}
+                </div>
+                <a href="#" onclick="showOrders(); closeUserMenu();" style="display: block; padding: 10px; text-decoration: none; color: #333; border-bottom: 1px solid #eee;">訂單查詢</a>
+                <a href="shopping.html" onclick="closeUserMenu();" style="display: block; padding: 10px; text-decoration: none; color: #333; border-bottom: 1px solid #eee;">購物車</a>
+                <a href="#" onclick="logout(); closeUserMenu();" style="display: block; padding: 10px; text-decoration: none; color: #e74c3c;">登出</a>
+            `;
+            
+            // 找到導航區域並添加選單
+            const navRight = document.querySelector('.nav-right');
+            if (navRight) {
+                const loginLink = navRight.querySelector('a[onclick*="showLogin"], a[onclick*="showUserMenu"]');
+                if (loginLink) {
+                    loginLink.style.position = 'relative';
+                    loginLink.appendChild(menu);
+                }
+            }
+            
+            // 點擊其他地方關閉選單
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenuOnClickOutside(e) {
+                    if (!menu.contains(e.target)) {
+                        menu.remove();
+                        document.removeEventListener('click', closeMenuOnClickOutside);
+                    }
+                });
+            }, 100);
+        }
+
+        // 關閉用戶選單
+        function closeUserMenu() {
+            const menu = document.getElementById('userDropdownMenu');
+            if (menu) {
+                menu.remove();
+            }
+        }
+
+        // 登出功能
+        function logout() {
+            if (confirm('確定要登出嗎？')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('loginTime');
+                
+                // 顯示登出成功訊息
+                showNotification('✅ 已成功登出', 'success');
+                
+                // 更新登入狀態顯示
+                checkAndUpdateLoginStatus();
+            }
+        }
+
+        // 導航功能增強
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function showNewReleases() {
+            // 執行新書推薦搜尋
+            document.getElementById('searchInput').value = '新書';
+            document.getElementById('searchCategory').value = 'all';
+            performSearch();
+        }
+
+        function showBestsellers() {
+            // 執行暢銷書搜尋
+            document.getElementById('searchInput').value = '暢銷書';
+            document.getElementById('searchCategory').value = 'all';
+            performSearch();
+        }
+
+        function showEbooks() {
+            // 執行電子書搜尋
+            document.getElementById('searchInput').value = '電子書';
+            document.getElementById('searchCategory').value = 'ebook';
+            performSearch();
+        }
+
+        function showLogin() {
+            window.location.href = 'login.html';
+        }
+
+        function showOrders() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html?redirect=ordersearch.html';
+                return;
+            }
+            window.location.href = 'ordersearch.html';
+        }
+
+        function showCart() {
+            window.location.href = 'shopping.html';
+        }
+
+        function toggleLanguage() {
+            showNotification('🌐 語言切換功能開發中', 'info');
+        }
+
+        // 分類導航功能
+        function showCategory(category) {
+            console.log(`📂 顯示分類: ${category}`);
+            
+            const categoryQueries = {
+                'featured': '特色書展',
+                'chinese': '中文書',
+                'simplified': '簡體書',
+                'english': '外文書',
+                'ebook': '電子書',
+                'audiobook': '有聲書',
+                'subscription': '訂閱',
+                'magazine': '雜誌',
+                'japanese': '日文書',
+                'textbook': '教科書',
+                'reference': '參考書'
+            };
+            
+            const query = categoryQueries[category] || category;
+            
+            // 執行分類搜尋
+            document.getElementById('searchInput').value = query;
+            document.getElementById('searchCategory').value = category === 'chinese' ? 'chinese' : 'all';
+            performSearch();
+        }
+
+        // 活動功能
+        function showActivity(type) {
+            console.log(`🎯 顯示活動: ${type}`);
+            
+            const activityActions = {
+                'reading': () => showNotification('📖 好讀活動頁面開發中', 'info'),
+                'member': () => showNotification('🎯 會員專屬優惠頁面開發中', 'info'),
+                'checkin': () => {
+                    // 模擬簽到功能
+                    const lastCheckin = localStorage.getItem('lastCheckin');
+                    const today = new Date().toDateString();
+                    
+                    if (lastCheckin === today) {
+                        showNotification('✅ 今日已簽到過了！', 'info');
+                    } else {
+                        localStorage.setItem('lastCheckin', today);
+                        let points = parseInt(localStorage.getItem('userPoints') || '0');
+                        points += 10;
+                        localStorage.setItem('userPoints', points.toString());
+                        showNotification(`🎉 簽到成功！獲得10點數，總計${points}點`, 'success');
+                    }
+                }
+            };
+            
+            const action = activityActions[type];
+            if (action) {
+                action();
+            } else {
+                showNotification(`${type}活動頁面開發中`, 'info');
+            }
+        }
+
+        // 橫向捲動功能增強
+        function scrollHorizontal(containerId, direction) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const scrollAmount = 300;
+            const targetScrollLeft = container.scrollLeft + (direction * scrollAmount);
+            
+            // 平滑滾動
+            container.scrollTo({
+                left: targetScrollLeft,
+                behavior: 'smooth'
+            });
+            
+            // 更新捲動按鈕狀態
+            setTimeout(() => {
+                updateScrollButtons(containerId);
+            }, 300);
+        }
+
+        // 更新捲動按鈕狀態
+        function updateScrollButtons(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const scrollContainer = container.parentElement;
+            const leftBtn = scrollContainer.querySelector('.scroll-left');
+            const rightBtn = scrollContainer.querySelector('.scroll-right');
+            
+            if (leftBtn) {
+                leftBtn.style.opacity = container.scrollLeft <= 0 ? '0.5' : '1';
+                leftBtn.style.pointerEvents = container.scrollLeft <= 0 ? 'none' : 'auto';
+            }
+            
+            if (rightBtn) {
+                const isAtEnd = container.scrollLeft >= (container.scrollWidth - container.clientWidth);
+                rightBtn.style.opacity = isAtEnd ? '0.5' : '1';
+                rightBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+            }
+        }
+
+        // 更多標籤
+        function showMoreTabs() {
+            showNotification('📋 更多分類標籤功能開發中', 'info');
+        }
+
+        // 客服功能
+        function openCustomerService() {
+            showNotification('💬 線上客服功能開發中', 'info');
+        }
+
+        // 回到頂部功能
+        function backToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 通知系統
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: '#4CAF50',
+                info: '#2196F3',
+                warning: '#ff9800',
+                error: '#f44336'
+            };
+            
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${colors[type]};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                max-width: 300px;
+                font-size: 14px;
+                opacity: 0;
+                transform: translateX(100%);
+                transition: all 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // 動畫進入
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
+            }, 10);
+            
+            // 自動消失
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 輪播功能增強
+        class CarouselManager {
+            constructor() {
+                this.currentSlide = 0;
+                this.slides = [
+                    {
+                        title: '新書上市',
+                        subtitle: '探索最新出版的精彩書籍',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        action: () => showNewReleases()
+                    },
+                    {
+                        title: '暢銷排行',
+                        subtitle: '發現最受歡迎的熱門書籍',
+                        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                        action: () => showBestsellers()
+                    },
+                    {
+                        title: '電子書城',
+                        subtitle: '隨時隨地享受數位閱讀',
+                        background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                        action: () => showEbooks()
+                    }
+                ];
+                this.init();
+            }
+            
+            init() {
+                this.updateSlide();
+                this.startAutoSlide();
+                this.attachEvents();
+            }
+            
+            updateSlide() {
+                const slideElement = document.querySelector('.carousel-slide');
+                const dots = document.querySelectorAll('.nav-dot');
+                
+                if (slideElement) {
+                    const slide = this.slides[this.currentSlide];
+                    slideElement.style.background = slide.background;
+                    slideElement.innerHTML = `
+                        <div class="slide-content">
+                            <h2 style="cursor: pointer;" onclick="carouselManager.slides[${this.currentSlide}].action()">${slide.title}</h2>
+                            <p>${slide.subtitle}</p>
+                        </div>
+                    `;
+                }
+                
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentSlide);
+                });
+            }
+            
+            nextSlide() {
+                this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+                this.updateSlide();
+            }
+            
+            goToSlide(index) {
+                this.currentSlide = index;
+                this.updateSlide();
+            }
+            
+            startAutoSlide() {
+                setInterval(() => {
+                    this.nextSlide();
+                }, 5000);
+            }
+            
+            attachEvents() {
+                const dots = document.querySelectorAll('.nav-dot');
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        this.goToSlide(index);
+                    });
+                });
+            }
+        }
+
+        // 修改原有的相關函數
+        function initializeBookCards() {
+            console.log('🚀 初始化書籍卡片');
+            
+            // 載入所有書籍資料
+            window.bookManager.loadAllBooks();
+        }
+
+        function switchTab(tabType, element) {
+            if (window.bookManager) {
+                window.bookManager.switchTab(tabType, element);
+            }
+        }
+
+        function updateCartCount() {
+            if (window.bookManager) {
+                window.bookManager.updateCartDisplay();
+            }
+        }
+
+        // 頁面載入完成後的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 首頁載入完成，開始初始化...');
+            
+            // 檢查並更新登入狀態
+            checkAndUpdateLoginStatus();
+            
+            // 更新購物車數量
+            updateCartCount();
+            
+            // 初始化輪播
+            window.carouselManager = new CarouselManager();
+            
+            // 等待 Google Books API 準備就緒
+            if (window.googleBooksAPI) {
+                initializeBookCards();
+            } else {
+                // 如果 API 還沒準備好，等待一下
+                setTimeout(() => {
+                    if (window.googleBooksAPI) {
+                        initializeBookCards();
+                    } else {
+                        console.warn('Google Books API 未準備就緒，使用備用資料');
+                        window.bookManager.loadFallbackData();
+                        window.bookManager.updateAllDisplays();
+                    }
+                }, 2000);
+            }
+            
+            // 添加搜尋框 Enter 鍵支援
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+                
+                // 添加搜尋建議功能（簡單版）
+                searchInput.addEventListener('input', function() {
+                    const value = this.value.trim();
+                    if (value.length > 2) {
+                        // 這裡可以添加搜尋建議邏輯
+                        console.log('搜尋建議:', value);
+                    }
+                });
+            }
+            
+            // 監聽滾動事件，控制回到頂部按鈕和捲動按鈕狀態
+            window.addEventListener('scroll', function() {
+                const backToTopBtn = document.querySelector('.back-to-top');
+                if (backToTopBtn) {
+                    if (window.pageYOffset > 300) {
+                        backToTopBtn.classList.add('show');
+                    } else {
+                        backToTopBtn.classList.remove('show');
+                    }
+                }
+            });
+            
+            // 初始化所有橫向捲動容器的按鈕狀態
+            document.querySelectorAll('.horizontal-scroll').forEach(container => {
+                updateScrollButtons(container.id);
+                
+                // 監聽捲動事件
+                container.addEventListener('scroll', function() {
+                    updateScrollButtons(this.id);
+                });
+            });
+            
+            // 觸控設備支援橫向滑動
+            let startX = 0;
+            let scrollLeft = 0;
+
+            document.querySelectorAll('.horizontal-scroll').forEach(container => {
+                container.addEventListener('touchstart', function(e) {
+                    startX = e.touches[0].pageX - container.offsetLeft;
+                    scrollLeft = container.scrollLeft;
+                });
+
+                container.addEventListener('touchmove', function(e) {
+                    if (!startX) return;
+                    e.preventDefault();
+                    const x = e.touches[0].pageX - container.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    container.scrollLeft = scrollLeft - walk;
+                });
+
+                container.addEventListener('touchend', function() {
+                    startX = 0;
+                });
+            });
+            
+            // 鍵盤快捷鍵支援
+            document.addEventListener('keydown', function(e) {
+                // Ctrl + / 聚焦搜尋框
+                if (e.ctrlKey && e.key === '/') {
+                    e.preventDefault();
+                    const searchInput = document.getElementById('searchInput');
+                    if (searchInput) {
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                }
+                
+                // Ctrl + Home 回到頂部
+                if (e.ctrlKey && e.key === 'Home') {
+                    e.preventDefault();
+                    backToTop();
+                }
+                
+                // Escape 關閉用戶選單
+                if (e.key === 'Escape') {
+                    closeUserMenu();
+                }
+            });
+            
+            console.log('✅ 首頁初始化完成');
+            
+            // 顯示歡迎訊息
+            setTimeout(() => {
+                const isFirstVisit = !localStorage.getItem('hasVisited');
+                if (isFirstVisit) {
+                    showNotification('📚 歡迎來到書客來！開始您的閱讀之旅', 'success');
+                    localStorage.setItem('hasVisited', 'true');
+                }
+            }, 1000);
+        });
+
+        // 全域錯誤處理
+        window.addEventListener('error', function(e) {
+            console.error('頁面錯誤:', e.error);
+        });
+
+        // 全域未處理的 Promise 拒絕
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('未處理的 Promise 拒絕:', e.reason);
+        });
+
+        console.log('📖 書客來首頁腳本載入完成');
+    </script>
+</body>
+</html>

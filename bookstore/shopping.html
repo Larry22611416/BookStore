@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購物車 - 書客來線上書店</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "微軟雅黑", Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* 頂部導航 */
+        .top-nav {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 8px 0;
+        }
+
+        .top-nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 13px;
+        }
+
+        .nav-left a, .nav-right a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .nav-left a:hover, .nav-right a:hover {
+            color: #4CAF50;
+        }
+
+        .nav-right .user-info {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* 搜尋區域 */
+        .search-section {
+            background-color: #fff;
+            padding: 15px 0;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            margin-right: 30px;
+        }
+
+        .logo h1 {
+            color: #4CAF50;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            max-width: 500px;
+        }
+
+        .category-select {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-right: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search-input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-left: none;
+            border-right: none;
+            padding: 8px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        /* 警告橫幅 */
+        .warning-banner {
+            background-color: #fff3cd;
+            border: 1px solid #ffd700;
+            padding: 10px;
+            text-align: center;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        /* 主要內容 */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 優惠活動橫幅 */
+        .promo-info {
+            background-color: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .promo-info:hover {
+            background-color: #d4f0d4;
+        }
+
+        .promo-info .promo-title {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .promo-info .promo-detail {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* 購物車標籤 */
+        .cart-tabs {
+            display: flex;
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .cart-tab {
+            flex: 1;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .cart-tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .cart-tab:hover:not(.active) {
+            background-color: #e0e0e0;
+        }
+
+        /* 購物車內容 */
+        .cart-content {
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* 商品表格 */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cart-table thead {
+            background-color: #f8f8f8;
+        }
+
+        .cart-table th {
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+        }
+
+        .cart-table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        .cart-table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* 商品圖片 */
+        .product-image {
+            width: 60px;
+            height: 80px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 10px;
+        }
+
+        /* 商品資訊 */
+        .product-info {
+            text-align: left;
+        }
+
+        .product-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .product-note {
+            color: #666;
+            font-size: 11px;
+        }
+
+        /* 價格顯示 */
+        .price-info {
+            text-align: right;
+        }
+
+        .current-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .original-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        /* 數量控制 */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .qty-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .qty-input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        /* 小計 */
+        .subtotal {
+            text-align: right;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* 庫存狀態 */
+        .stock-status {
+            text-align: center;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .stock-status.out-of-stock {
+            color: #e74c3c;
+        }
+
+        /* 操作按鈕 */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .action-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .remove-btn {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .remove-btn:hover {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        /* 底部操作區 */
+        .cart-footer {
+            background-color: #f8f8f8;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .bulk-btn {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .bulk-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .special-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cart-summary {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .total-info {
+            text-align: right;
+        }
+
+        .total-items {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .total-amount {
+            color: #e74c3c;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* 結帳按鈕 */
+        .checkout-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .checkout-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn.primary {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .checkout-btn.primary:hover {
+            background-color: #ffb300;
+        }
+
+        .checkout-btn.secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .checkout-btn.secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 重要提醒 */
+        .important-notes {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .notes-title {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            margin: -20px -20px 15px -20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .notes-content {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .notes-content ul {
+            margin-left: 20px;
+        }
+
+        .notes-content li {
+            margin-bottom: 8px;
+        }
+
+        .notes-content a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .notes-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* 空購物車 */
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+
+        .empty-cart h3 {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart p {
+            color: #999;
+            margin-bottom: 25px;
+        }
+
+        .shop-now-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin: 0 5px;
+        }
+
+        .shop-now-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* 結帳彈出視窗 */
+        .checkout-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .checkout-modal.show {
+            display: flex;
+        }
+
+        .checkout-modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .checkout-modal.show .checkout-modal-content {
+            transform: scale(1);
+        }
+
+        .checkout-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .checkout-close:hover {
+            color: #666;
+        }
+
+        .checkout-modal-title {
+            color: #4CAF50;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkout-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .checkout-input:focus {
+            border-color: #4CAF50;
+        }
+
+        .checkout-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background-color: white;
+        }
+
+        .order-summary {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .order-summary h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .order-total {
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 10px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .cart-table {
+                font-size: 11px;
+            }
+            
+            .cart-table th,
+            .cart-table td {
+                padding: 8px 5px;
+            }
+            
+            .cart-footer {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .special-actions {
+                flex-direction: column;
+            }
+            
+            .checkout-buttons {
+                justify-content: center;
+            }
+
+            .checkout-modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 頂部導航 -->
+    <div class="top-nav">
+        <div class="container">
+            <div class="nav-left">
+                <a href="index.html">回首頁</a>
+                <a href="#" onclick="showNewReleases()">新書推薦</a>
+                <a href="#" onclick="showBestsellers()">暢銷榜</a>
+                <a href="#" onclick="showEbooks()">電子書城</a>
+            </div>
+            <div class="nav-right">
+                <span class="user-info" id="userInfo">未登入</span>
+                <a href="#" id="loginLogoutBtn" onclick="handleLoginLogout()">會員登入</a>
+                <a href="#" onclick="showOrders()">訂單查詢</a>
+                <a href="#" onclick="toggleLanguage()">繁體</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜尋區域 -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none;">
+                    <h1>書客來</h1>
+                </a>
+            </div>
+            <div class="search-box">
+                <select class="category-select">
+                    <option value="all">全館</option>
+                    <option value="chinese">中文書</option>
+                    <option value="english">外文書</option>
+                    <option value="ebook">電子書</option>
+                </select>
+                <input type="text" class="search-input" placeholder="每日口袋99">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 警告橫幅 -->
+    <div class="warning-banner" id="warningBanner">
+        因應近期台灣出口法規修訂，部分商品涉及原產地或稅關限制，暫不提供寄送至美國的服務。
+    </div>
+
+    <!-- 主要內容 -->
+    <div class="main-container">
+        <!-- 優惠活動 -->
+        <div class="promo-info" onclick="togglePromoDetail()">
+            <div class="promo-title">
+                🎯 優惠訊息
+            </div>
+            <div class="promo-detail" id="promoDetail">
+                📚 5/27-5/28讀書日全站分級滿$1200再9折起(部分除外)，滿額最高15%回饋
+            </div>
+        </div>
+
+        <!-- 購物車標籤 -->
+        <div class="cart-tabs">
+            <button class="cart-tab active" onclick="switchTab('purchase', this)">購物明細</button>
+            <button class="cart-tab" onclick="switchTab('free', this)">免費贈品</button>
+            <button class="cart-tab" onclick="switchTab('points', this)">點數回饋</button>
+            <button class="cart-tab" onclick="switchTab('next', this)">下次再買清單</button>
+            <button class="cart-tab" onclick="switchTab('notice', this)">注意事項</button>
+        </div>
+
+        <!-- 購物車內容 -->
+        <div class="cart-content" id="cartContent">
+            <!-- 購物車商品表格 -->
+            <div id="cartTableContainer">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th>商品明細</th>
+                            <th>優惠價/點數兌換價</th>
+                            <th>數量</th>
+                            <th>小計</th>
+                            <th>庫存</th>
+                            <th>變更明細</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody">
+                        <!-- 購物車商品將通過 JavaScript 載入 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 購物車底部操作 -->
+            <div class="cart-footer" id="cartFooter">
+                <div class="bulk-actions">
+                    <button class="bulk-btn" onclick="addSelectedToNextTime()">整批放入下次再買</button>
+                    <button class="bulk-btn" onclick="removeSelected()">整批刪除</button>
+                    <div class="special-actions">
+                        <button class="bulk-btn" onclick="addTestProducts()" 
+                                style="background-color: #4CAF50; color: white; border-color: #4CAF50;">
+                            📚 添加測試商品
+                        </button>
+                        <button class="bulk-btn" onclick="syncCartWithDatabase()" 
+                                style="background-color: #2196f3; color: white; border-color: #2196f3;">
+                            🔄 同步購物車
+                        </button>
+                        <button class="bulk-btn" onclick="clearCart()" 
+                                style="background-color: #f44336; color: white; border-color: #f44336;">
+                            🗑️ 清空購物車
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="cart-summary">
+                    <div class="total-info">
+                        <div class="total-items">共 <span id="totalItems">0</span> 項商品，數量 <span id="totalQuantity">0</span> 個</div>
+                        <div class="total-amount">金額/小計：NT$ <span id="totalAmount">0</span> 元</div>
+                    </div>
+                    
+                    <div class="checkout-buttons">
+                        <button class="checkout-btn secondary" onclick="continueShopping()">回首頁</button>
+                        <button class="checkout-btn secondary" onclick="goToOverseas()">海外結帳</button>
+                        <button class="checkout-btn primary" onclick="proceedToCheckout()" id="checkoutBtn">國內結帳</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 空購物車 -->
+        <div class="empty-cart" id="emptyCart" style="display: none;">
+            <h3>🛒 您的購物車是空的</h3>
+            <p>快去挑選您喜愛的書籍吧！</p>
+            <div style="margin: 20px 0; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="addTestProducts()" class="shop-now-btn" 
+                        style="background-color: #4CAF50;">
+                    📚 載入測試商品
+                </button>
+                <a href="index.html" class="shop-now-btn">
+                    🏠 回到首頁購物
+                </a>
+                <button onclick="syncCartWithDatabase()" class="shop-now-btn" 
+                        style="background-color: #2196f3;">
+                    🔄 同步購物車資料
+                </button>
+            </div>
+        </div>
+
+        <!-- 重要提醒 -->
+        <div class="important-notes">
+            <div class="notes-title">重要提醒</div>
+            <div class="notes-content">
+                <ul>
+                    <li>購物車中的商品會自動保存到您的帳戶中，可在不同裝置間同步。</li>
+                    <li>商品總件數大於或多於15項，可能不適用『7-11取貨』。(<a href="#" onclick="showShippingInfo()">說明</a>)</li>
+                    <li>結帳選項若無現『海外店取』，可能是購買商品不適用此服務。(<a href="#" onclick="showOverseasInfo()">說明</a>)</li>
+                    <li>海外郵資請單算。(<a href="#" onclick="showShippingCost()">說明</a>)</li>
+                    <li><strong>🔄 增強功能</strong>：購物車資料會自動與資料庫同步，登入後可在不同裝置查看。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 結帳彈出視窗 -->
+    <div class="checkout-modal" id="checkoutModal">
+        <div class="checkout-modal-content">
+            <button class="checkout-close" onclick="closeCheckoutModal()">&times;</button>
+            <h3 class="checkout-modal-title">🛒 確認結帳</h3>
+            
+            <form id="checkoutForm" onsubmit="submitOrder(event)">
+                <input type="text" class="checkout-input" id="shippingName" placeholder="收件人姓名" required>
+                <input type="tel" class="checkout-input" id="shippingPhone" placeholder="收件人電話" required>
+                <input type="text" class="checkout-input" id="shippingAddress" placeholder="收件地址" required>
+                
+                <select class="checkout-select" id="paymentMethod" required>
+                    <option value="">請選擇付款方式</option>
+                    <option value="credit_card">信用卡</option>
+                    <option value="atm">ATM轉帳</option>
+                    <option value="convenience_store">超商取貨付款</option>
+                    <option value="line_pay">LINE Pay</option>
+                </select>
+                
+                <div class="order-summary">
+                    <h4>📋 訂單摘要</h4>
+                    <div id="orderSummaryItems"></div>
+                    <div class="order-total">
+                        <div class="order-item">
+                            <span>總計：</span>
+                            <span>NT$ <span id="orderTotalAmount">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="checkout-btn primary" style="width: 100%; margin-top: 15px;" id="submitOrderBtn">
+                    💳 確認下單
+                </button>
+                <button type="button" class="checkout-btn secondary" style="width: 100%; margin-top: 10px;" onclick="closeCheckoutModal()">
+                    取消
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 資料庫管理系統 -->
+    <script src="js/database.js"></script>
+    <script>
+        // 增強版購物車管理器
+        class EnhancedCartManager {
+            constructor() {
+                this.cartItems = [];
+                this.currentUser = null;
+                this.isLoggedIn = false;
+                this.init();
+            }
+
+            async init() {
+                console.log('🛒 初始化增強版購物車管理器');
+                
+                // 檢查登入狀態
+                this.checkLoginStatus();
+                
+                // 等待資料庫準備就緒
+                if (window.bookstoreDB && window.bookstoreDB.db) {
+                    await this.loadCartData();
+                } else {
+                    // 監聽資料庫就緒事件
+                    window.addEventListener('databaseReady', async () => {
+                        await this.loadCartData();
+                    });
+                }
+                
+                this.updateCartDisplay();
+                console.log('✅ 增強版購物車管理器初始化完成');
+            }
+
+            checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn');
+                const userEmail = localStorage.getItem('userEmail');
+                const userName = localStorage.getItem('userName');
+
+                this.isLoggedIn = (isLoggedIn === 'true' && userEmail);
+                this.currentUser = userEmail;
+
+                if (this.isLoggedIn) {
+                    document.getElementById('userInfo').textContent = `歡迎，${userName || userEmail}`;
+                    document.getElementById('loginLogoutBtn').textContent = '登出';
+                } else {
+                    document.getElementById('userInfo').textContent = '未登入';
+                    document.getElementById('loginLogoutBtn').textContent = '會員登入';
+                }
+            }
+
+            async loadCartData() {
+                try {
+                    if (this.isLoggedIn && this.currentUser) {
+                        console.log('🔄 載入已登入用戶的購物車資料');
+                        
+                        // 從資料庫獲取購物車資料
+                        const dbCartItems = await window.bookstoreDB.getCart(this.currentUser);
+                        
+                        // 從本地獲取購物車資料
+                        const localCartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
+                        
+                        // 合併資料（優先保留本地資料）
+                        let mergedCart = [...localCartItems];
+                        
+                        dbCartItems.forEach(dbItem => {
+                            const existingItem = mergedCart.find(item => item.id === dbItem.id);
+                            if (!existingItem) {
+                                mergedCart.push(dbItem);
+                            }
+                        });
+                        
+                        this.cartItems = mergedCart;
+                        
+                        // 更新本地和資料庫
+                        localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+                        if (this.cartItems.length > 0) {
+                            await window.bookstoreDB.saveCart(this.currentUser, this.cartItems);
+                        }
+                        
+                        console.log('✅ 購物車資料載入並同步完成');
+                    } else {
+                        console.log('👤 未登入用戶，載入本地購物車資料');
+                        
+                        // 未登入，只使用本地資料
+                        const localCartItems = localStorage.getItem('cartItems');
+                        
+                        if (localCartItems) {
+                            this.cartItems = JSON.parse(localCartItems);
+                        } else {
+                            // 如果沒有本地資料，載入一些測試資料
+                            this.cartItems = this.getDefaultTestItems();
+                            this.saveCartData();
+                        }
+                    }
+                } catch (error) {
+                    console.error('❌ 載入購物車資料失敗:', error);
+                    
+                    // 載入失敗時使用本地或測試資料
+                    const localCartItems = localStorage.getItem('cartItems');
+                    if (localCartItems) {
+                        this.cartItems = JSON.parse(localCartItems);
+                    } else {
+                        this.cartItems = this.getDefaultTestItems();
+                        this.saveCartData();
+                    }
+                }
+
+                this.updateCartDisplay();
+            }
+
+            getDefaultTestItems() {
+                return [
+                    {
+                        id: 'book001',
+                        title: '哈利波特(3)：阿茲卡班的逃犯【繁體中文版20週年紀念】',
+                        note: '優惠期限至2025/06/30',
+                        price: 410,
+                        originalPrice: 500,
+                        quantity: 1,
+                        stock: '有',
+                        selected: true,
+                        addedAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'book002',
+                        title: '三體系列選銀簽名套書',
+                        note: '優惠期限至2025/06/30',
+                        price: 1012,
+                        originalPrice: 1200,
+                        quantity: 1,
+                        stock: '有',
+                        selected: true,
+                        addedAt: new Date().toISOString()
+                    }
+                ];
+            }
+
+            async saveCartData() {
+                try {
+                    // 保存到本地
+                    localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+                    
+                    // 如果已登入，同時保存到資料庫
+                    if (this.isLoggedIn && this.currentUser && window.bookstoreDB && window.bookstoreDB.db) {
+                        await window.bookstoreDB.saveCart(this.currentUser, this.cartItems);
+                        console.log('✅ 購物車資料已同步到資料庫');
+                    }
+                } catch (error) {
+                    console.error('❌ 保存購物車資料失敗:', error);
+                }
+            }
+
+            async addToCart(product) {
+                try {
+                    const existingItemIndex = this.cartItems.findIndex(item => item.id === product.id);
+                    
+                    if (existingItemIndex >= 0) {
+                        // 商品已存在，增加數量
+                        this.cartItems[existingItemIndex].quantity += (product.quantity || 1);
+                    } else {
+                        // 新商品，添加到購物車
+                        this.cartItems.push({
+                            id: product.id,
+                            title: product.title,
+                            price: product.currentPrice || product.price,
+                            originalPrice: product.originalPrice,
+                            quantity: product.quantity || 1,
+                            stock: '有',
+                            selected: true,
+                            addedAt: new Date().toISOString(),
+                            note: product.note || '優惠期限至2025/06/30'
+                        });
+                    }
+                    
+                    await this.saveCartData();
+                    this.updateCartDisplay();
+                    
+                    // 顯示成功訊息
+                    this.showNotification(`✅ "${product.title}" 已加入購物車`, 'success');
+                    
+                    console.log('✅ 商品已加入購物車:', product.title);
+                } catch (error) {
+                    console.error('❌ 加入購物車失敗:', error);
+                    this.showNotification('❌ 加入購物車失敗，請稍後再試', 'error');
+                }
+            }
+
+            async removeItem(index) {
+                try {
+                    const item = this.cartItems[index];
+                    if (confirm(`確定要從購物車中移除「${item.title}」嗎？`)) {
+                        this.cartItems.splice(index, 1);
+                        await this.saveCartData();
+                        this.updateCartDisplay();
+                        
+                        this.showNotification(`🗑️ "${item.title}" 已從購物車移除`, 'info');
+                    }
+                } catch (error) {
+                    console.error('❌ 移除商品失敗:', error);
+                    this.showNotification('❌ 移除商品失敗，請稍後再試', 'error');
+                }
+            }
+
+            async updateQuantity(index, change) {
+                try {
+                    const newQuantity = this.cartItems[index].quantity + change;
+                    if (newQuantity >= 1) {
+                        this.cartItems[index].quantity = newQuantity;
+                        await this.saveCartData();
+                        this.updateCartDisplay();
+                    }
+                } catch (error) {
+                    console.error('❌ 更新數量失敗:', error);
+                }
+            }
+
+            async setQuantity(index, quantity) {
+                try {
+                    const qty = parseInt(quantity);
+                    if (qty >= 1) {
+                        this.cartItems[index].quantity = qty;
+                        await this.saveCartData();
+                        this.updateCartDisplay();
+                    }
+                } catch (error) {
+                    console.error('❌ 設置數量失敗:', error);
+                }
+            }
+
+            toggleItemSelection(index) {
+                this.cartItems[index].selected = !this.cartItems[index].selected;
+                this.updateSummary();
+                this.saveCartData();
+            }
+
+            toggleSelectAll() {
+                const selectAll = document.getElementById('selectAll').checked;
+                this.cartItems.forEach(item => item.selected = selectAll);
+                this.updateCartDisplay();
+            }
+
+            updateCartDisplay() {
+                const tableBody = document.getElementById('cartTableBody');
+                const emptyCart = document.getElementById('emptyCart');
+                const cartTableContainer = document.getElementById('cartTableContainer');
+                const cartFooter = document.getElementById('cartFooter');
+                
+                if (this.cartItems.length === 0) {
+                    cartTableContainer.style.display = 'none';
+                    cartFooter.style.display = 'none';
+                    emptyCart.style.display = 'block';
+                    return;
+                }
+                
+                cartTableContainer.style.display = 'block';
+                cartFooter.style.display = 'flex';
+                emptyCart.style.display = 'none';
+                
+                tableBody.innerHTML = this.cartItems.map((item, index) => `
+                    <tr>
+                        <td style="text-align: center;">
+                            <input type="checkbox" ${item.selected ? 'checked' : ''} 
+                                   onchange="cartManager.toggleItemSelection(${index})">
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <div class="product-image">封面圖片</div>
+                                <div class="product-info">
+                                    <div class="product-title">${item.title}</div>
+                                    <div class="product-note">${item.note || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="price-info">
+                            <div class="current-price">$ ${item.price.toLocaleString()}</div>
+                            ${item.originalPrice ? `<div class="original-price">$ ${item.originalPrice.toLocaleString()}</div>` : ''}
+                        </td>
+                        <td>
+                            <div class="quantity-control">
+                                <button class="qty-btn" onclick="cartManager.updateQuantity(${index}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                                <input type="number" class="qty-input" value="${item.quantity}" 
+                                       onchange="cartManager.setQuantity(${index}, this.value)" min="1">
+                                <button class="qty-btn" onclick="cartManager.updateQuantity(${index}, 1)">+</button>
+                            </div>
+                        </td>
+                        <td class="subtotal">$ ${(item.price * item.quantity).toLocaleString()}</td>
+                        <td class="stock-status">${item.stock || '有'}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn" onclick="addToNextTime(${index})">下次再買</button>
+                                <button class="action-btn remove-btn" onclick="cartManager.removeItem(${index})">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+                
+                this.updateSummary();
+            }
+
+            updateSummary() {
+                const selectedItems = this.cartItems.filter(item => item.selected);
+                const totalItems = selectedItems.length;
+                const totalQuantity = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+                const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                document.getElementById('totalItems').textContent = totalItems;
+                document.getElementById('totalQuantity').textContent = totalQuantity;
+                document.getElementById('totalAmount').textContent = totalAmount.toLocaleString();
+                
+                // 更新結帳按鈕狀態
+                const checkoutBtn = document.getElementById('checkoutBtn');
+                if (totalItems === 0) {
+                    checkoutBtn.disabled = true;
+                    checkoutBtn.textContent = '請選擇商品';
+                } else {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = '國內結帳';
+                }
+                
+                // 更新導航欄中的購物車數量
+                const allQuantity = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+                const cartCountElements = document.querySelectorAll('#cartCount');
+                cartCountElements.forEach(element => {
+                    if (element) element.textContent = allQuantity;
+                });
+            }
+
+            // 同步購物車資料
+            async syncCartWithDatabase() {
+                if (!this.isLoggedIn) {
+                    this.showNotification('⚠️ 請先登入會員才能同步購物車', 'warning');
+                    return;
+                }
+
+                try {
+                    this.showNotification('🔄 正在同步購物車資料...', 'info');
+                    
+                    await this.loadCartData();
+                    this.showNotification('✅ 購物車資料同步完成', 'success');
+                } catch (error) {
+                    console.error('❌ 同步購物車失敗:', error);
+                    this.showNotification('❌ 同步失敗，請稍後再試', 'error');
+                }
+            }
+
+            // 清空購物車
+            async clearCart() {
+                if (confirm('確定要清空整個購物車嗎？')) {
+                    try {
+                        this.cartItems = [];
+                        await this.saveCartData();
+                        this.updateCartDisplay();
+                        this.showNotification('🗑️ 購物車已清空', 'info');
+                    } catch (error) {
+                        console.error('❌ 清空購物車失敗:', error);
+                        this.showNotification('❌ 清空失敗，請稍後再試', 'error');
+                    }
+                }
+            }
+
+            // 添加測試商品
+            async addTestProducts() {
+                const testProducts = [
+                    {
+                        id: 'book003',
+                        title: '財富理的普通常識 (紀念典藏版)',
+                        note: '66折特惠中',
+                        price: 330,
+                        originalPrice: 500,
+                        quantity: 1
+                    },
+                    {
+                        id: 'book004',
+                        title: '明智殺介的奔走【博客來特別版】',
+                        note: '79折優惠',
+                        price: 363,
+                        originalPrice: 460,
+                        quantity: 1
+                    }
+                ];
+                
+                let addedCount = 0;
+                for (const product of testProducts) {
+                    const existingItem = this.cartItems.find(item => item.id === product.id);
+                    if (!existingItem) {
+                        await this.addToCart(product);
+                        addedCount++;
+                    }
+                }
+                
+                if (addedCount > 0) {
+                    this.showNotification(`📚 已添加 ${addedCount} 本測試商品到購物車`, 'success');
+                } else {
+                    this.showNotification('這些測試商品已經在購物車中了！', 'info');
+                }
+            }
+
+            // 結帳處理
+            async proceedToCheckout() {
+                const selectedItems = this.cartItems.filter(item => item.selected);
+                
+                if (selectedItems.length === 0) {
+                    this.showNotification('請先選擇要結帳的商品', 'warning');
+                    return;
+                }
+
+                if (!this.isLoggedIn) {
+                    if (confirm('需要登入會員才能進行結帳，是否前往登入？')) {
+                        window.location.href = 'login.html?redirect=shopping.html';
+                    }
+                    return;
+                }
+
+                this.openCheckoutModal();
+            }
+
+            openCheckoutModal() {
+                const selectedItems = this.cartItems.filter(item => item.selected);
+                const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                // 更新訂單摘要
+                const summaryContainer = document.getElementById('orderSummaryItems');
+                summaryContainer.innerHTML = selectedItems.map(item => `
+                    <div class="order-item">
+                        <span>${item.title} x${item.quantity}</span>
+                        <span>$ ${(item.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('orderTotalAmount').textContent = totalAmount.toLocaleString();
+
+                // 預填用戶資料
+                if (this.currentUser) {
+                    const userName = localStorage.getItem('userName');
+                    if (userName) {
+                        document.getElementById('shippingName').value = userName;
+                    }
+                }
+
+                document.getElementById('checkoutModal').classList.add('show');
+            }
+
+            closeCheckoutModal() {
+                document.getElementById('checkoutModal').classList.remove('show');
+                document.getElementById('checkoutForm').reset();
+            }
+
+            async submitOrder(event) {
+                event.preventDefault();
+
+                const selectedItems = this.cartItems.filter(item => item.selected);
+                const totalAmount = selectedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                const orderData = {
+                    userEmail: this.currentUser,
+                    items: selectedItems,
+                    totalAmount: totalAmount,
+                    paymentMethod: document.getElementById('paymentMethod').value,
+                    shippingAddress: `${document.getElementById('shippingName').value}, ${document.getElementById('shippingPhone').value}, ${document.getElementById('shippingAddress').value}`,
+                    notes: '來自線上購物車'
+                };
+
+                const submitBtn = document.getElementById('submitOrderBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ 處理中...';
+
+                try {
+                    console.log('🛒 開始創建訂單:', orderData);
+
+                    // 檢查資料庫是否準備就緒
+                    if (!window.bookstoreDB || !window.bookstoreDB.db) {
+                        throw new Error('資料庫尚未準備就緒，請稍後再試');
+                    }
+
+                    // 創建訂單
+                    const newOrder = await window.bookstoreDB.createOrder(orderData);
+                    
+                    console.log('✅ 訂單創建成功:', newOrder);
+
+                    // 從購物車移除已結帳的商品
+                    this.cartItems = this.cartItems.filter(item => !item.selected);
+                    await this.saveCartData();
+                    this.updateCartDisplay();
+
+                    // 關閉結帳視窗
+                    this.closeCheckoutModal();
+
+                    // 顯示成功訊息
+                    alert(`🎉 訂單創建成功！\n\n訂單編號：${newOrder.orderNumber}\n總金額：NT$ ${totalAmount.toLocaleString()}\n\n您可以在「訂單查詢」中查看訂單詳情。`);
+
+                    // 跳轉到訂單查詢頁面
+                    if (confirm('是否前往訂單查詢頁面查看詳情？')) {
+                        window.location.href = 'ordersearch.html';
+                    }
+
+                } catch (error) {
+                    console.error('❌ 創建訂單失敗:', error);
+                    alert(error.message || '創建訂單失敗，請稍後再試');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '💳 確認下單';
+                }
+            }
+
+            showNotification(message, type = 'info') {
+                const colors = {
+                    success: '#4CAF50',
+                    info: '#2196F3',
+                    warning: '#ff9800',
+                    error: '#f44336'
+                };
+                
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: ${colors[type]};
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    max-width: 300px;
+                    font-size: 14px;
+                    opacity: 0;
+                    transform: translateX(100%);
+                    transition: all 0.3s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // 動畫進入
+                setTimeout(() => {
+                    notification.style.opacity = '1';
+                    notification.style.transform = 'translateX(0)';
+                }, 10);
+                
+                // 自動消失
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // 創建全域購物車管理器實例
+        let cartManager;
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🛒 購物車頁面載入完成');
+            
+            // 等待資料庫準備就緒後初始化
+            const initCartManager = () => {
+                if (window.bookstoreDB) {
+                    cartManager = new EnhancedCartManager();
+                } else {
+                    setTimeout(initCartManager, 100);
+                }
+            };
+            
+            initCartManager();
+        });
+
+        // 全域函數（供HTML調用）
+        function handleLoginLogout() {
+            if (cartManager && cartManager.isLoggedIn) {
+                logout();
+            } else {
+                window.location.href = 'login.html?redirect=shopping.html';
+            }
+        }
+
+        function logout() {
+            if (confirm('確定要登出嗎？')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('loginTime');
+                
+                cartManager.showNotification('✅ 已成功登出', 'success');
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        }
+
+        function addTestProducts() {
+            if (cartManager) {
+                cartManager.addTestProducts();
+            }
+        }
+
+        function syncCartWithDatabase() {
+            if (cartManager) {
+                cartManager.syncCartWithDatabase();
+            }
+        }
+
+        function clearCart() {
+            if (cartManager) {
+                cartManager.clearCart();
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cartManager) {
+                cartManager.proceedToCheckout();
+            }
+        }
+
+        function closeCheckoutModal() {
+            if (cartManager) {
+                cartManager.closeCheckoutModal();
+            }
+        }
+
+        function submitOrder(event) {
+            if (cartManager) {
+                cartManager.submitOrder(event);
+            }
+        }
+
+        function addToNextTime(index) {
+            if (cartManager) {
+                const item = cartManager.cartItems[index];
+                alert(`"${item.title}" 已加入下次再買清單`);
+                cartManager.removeItem(index);
+            }
+        }
+
+        function addSelectedToNextTime() {
+            if (cartManager) {
+                const selectedCount = cartManager.cartItems.filter(item => item.selected).length;
+                if (selectedCount === 0) {
+                    alert('請先選擇要操作的商品');
+                    return;
+                }
+                
+                if (confirm(`確定要將 ${selectedCount} 項商品加入下次再買清單嗎？`)) {
+                    cartManager.cartItems = cartManager.cartItems.filter(item => !item.selected);
+                    cartManager.saveCartData();
+                    cartManager.updateCartDisplay();
+                    cartManager.showNotification('已將選中的商品加入下次再買清單', 'success');
+                }
+            }
+        }
+
+        function removeSelected() {
+            if (cartManager) {
+                const selectedCount = cartManager.cartItems.filter(item => item.selected).length;
+                if (selectedCount === 0) {
+                    alert('請先選擇要刪除的商品');
+                    return;
+                }
+                
+                if (confirm(`確定要刪除 ${selectedCount} 項商品嗎？`)) {
+                    cartManager.cartItems = cartManager.cartItems.filter(item => !item.selected);
+                    cartManager.saveCartData();
+                    cartManager.updateCartDisplay();
+                    cartManager.showNotification('已刪除選中的商品', 'success');
+                }
+            }
+        }
+
+        function toggleSelectAll() {
+            if (cartManager) {
+                cartManager.toggleSelectAll();
+            }
+        }
+
+        function continueShopping() {
+            window.location.href = 'index.html';
+        }
+
+        function goToOverseas() {
+            alert('海外結帳功能開發中...');
+        }
+
+        function togglePromoDetail() {
+            const detail = document.getElementById('promoDetail');
+            if (detail.style.display === 'none') {
+                detail.style.display = 'block';
+            } else {
+                detail.style.display = 'none';
+            }
+        }
+
+        function switchTab(tabType, element) {
+            // 更新標籤狀態
+            document.querySelectorAll('.cart-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // 根據不同標籤顯示不同內容
+            switch(tabType) {
+                case 'purchase':
+                    if (cartManager) {
+                        cartManager.updateCartDisplay();
+                    }
+                    break;
+                case 'free':
+                    showFreeGifts();
+                    break;
+                case 'points':
+                    showPointsReward();
+                    break;
+                case 'next':
+                    showNextTimeBuy();
+                    break;
+                case 'notice':
+                    showNoticeItems();
+                    break;
+            }
+        }
+
+        function showFreeGifts() {
+            document.getElementById('cartTableContainer').style.display = 'none';
+            document.getElementById('cartFooter').style.display = 'none';
+            document.getElementById('emptyCart').innerHTML = `
+                <h3>🎁 免費贈品</h3>
+                <p>目前沒有符合贈品條件的商品</p>
+                <a href="index.html" class="shop-now-btn">繼續購物</a>
+            `;
+            document.getElementById('emptyCart').style.display = 'block';
+        }
+
+        function showPointsReward() {
+            document.getElementById('cartTableContainer').style.display = 'none';
+            document.getElementById('cartFooter').style.display = 'none';
+            document.getElementById('emptyCart').innerHTML = `
+                <h3>🎯 點數回饋</h3>
+                <p>購買商品即可獲得點數回饋</p>
+                <a href="index.html" class="shop-now-btn">查看回饋說明</a>
+            `;
+            document.getElementById('emptyCart').style.display = 'block';
+        }
+
+        function showNextTimeBuy() {
+            document.getElementById('cartTableContainer').style.display = 'none';
+            document.getElementById('cartFooter').style.display = 'none';
+            document.getElementById('emptyCart').innerHTML = `
+                <h3>📝 下次再買清單</h3>
+                <p>您的下次再買清單是空的</p>
+                <a href="index.html" class="shop-now-btn">繼續購物</a>
+            `;
+            document.getElementById('emptyCart').style.display = 'block';
+        }
+
+        function showNoticeItems() {
+            document.getElementById('cartTableContainer').style.display = 'none';
+            document.getElementById('cartFooter').style.display = 'none';
+            document.getElementById('emptyCart').innerHTML = `
+                <h3>⚠️ 注意事項</h3>
+                <p>請詳閱購物須知和配送說明</p>
+                <a href="#" class="shop-now-btn" onclick="showShippingInfo()">查看詳細說明</a>
+            `;
+            document.getElementById('emptyCart').style.display = 'block';
+        }
+
+        // 其他功能
+        function showOrders() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = 'login.html?redirect=ordersearch.html';
+                return;
+            }
+            window.location.href = 'ordersearch.html';
+        }
+
+        function showNewReleases() {
+            alert('新書推薦頁面開發中...');
+        }
+
+        function showBestsellers() {
+            alert('暢銷榜頁面開發中...');
+        }
+
+        function showEbooks() {
+            alert('電子書城頁面開發中...');
+        }
+
+        function toggleLanguage() {
+            alert('語言切換功能開發中...');
+        }
+
+        function showShippingInfo() {
+            alert('配送資訊說明開發中...');
+        }
+
+        function showOverseasInfo() {
+            alert('海外配送說明開發中...');
+        }
+
+        function showShippingCost() {
+            alert('運費說明開發中...');
+        }
+
+        // 點擊彈出視窗外部關閉
+        document.getElementById('checkoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCheckoutModal();
+            }
+        });
+
+        // 全域購物車添加函數（供其他頁面調用）
+        window.addToCart = function(product) {
+            if (cartManager) {
+                cartManager.addToCart(product);
+            } else {
+                console.warn('購物車管理器尚未初始化');
+            }
+        };
+
+        console.log('📦 增強版購物車腳本載入完成');
+    </script>
+</body>
+</html>
